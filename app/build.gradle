@@ -21,12 +21,15 @@ apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 
 def AAVersion = '3.3'
+def CouchBaseVersion = '1.0.4'
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:22.+'
+    compile 'com.android.support:support-v4:19.0.0'
     apt "org.androidannotations:androidannotations:$AAVersion"
     compile "org.androidannotations:androidannotations-api:$AAVersion"
+    compile "com.couchbase.lite:couchbase-lite-android:$CouchBaseVersion"
 }
 
 apt {
@@ -61,6 +64,13 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
+    }
+    // workaround for "duplicate files during packaging of APK" issue
+    // see https://groups.google.com/d/msg/adt-dev/bl5Rc4Szpzg/wC8cylTWuIEJ
+    packagingOptions {
+        exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
     }
 }
 

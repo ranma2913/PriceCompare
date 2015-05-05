@@ -1,6 +1,7 @@
 package com.ranma2913.pricecompare;
 
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.widget.EditText;
 
@@ -10,6 +11,8 @@ import java.text.NumberFormat;
 
 /**
  * Created by jsticha on 5/4/2015.
+ * <p/>
+ * This TextWatcher class fills digits from the right to the left. It will format the TextView with a dollar symbol and two decimal places.
  */
 public class MoneyTextWatcher implements TextWatcher {
     private final WeakReference<EditText> editTextWeakReference;
@@ -29,7 +32,12 @@ public class MoneyTextWatcher implements TextWatcher {
     @Override
     public void afterTextChanged(Editable editable) {
         EditText editText = editTextWeakReference.get();
-        if (editText == null) return;
+        if (editText == null) {
+            return;
+        }
+        if (TextUtils.isEmpty(editText.getText())) {
+            return;
+        }
         String s = editable.toString();
         editText.removeTextChangedListener(this);
         String cleanString = s.replaceAll("[$,.]", "");

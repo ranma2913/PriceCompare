@@ -6,7 +6,9 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.SystemService;
@@ -53,20 +55,33 @@ public class HomeScreen extends Activity {
         calculatePrice();
     }
 
+    @AfterViews
+    protected void init() {
+        itemPriceInput.addTextChangedListener(new MoneyTextWatcher(itemPriceInput));
+        typeOfUnitsInput.setOnKeyListener(typeOfUnitsInputKeyListener);
+    }
+
+    @Click
+    void clearButton() {
+        //R.id.homeScreenWelcomeMessage,R.id.itemDescriptionInput,R.id.itemPriceInput,R.id.numberOfUnitsInput,R.id.typeOfUnitsInput
+        resetInputFields();
+    }
+
+    private void resetInputFields() {
+        itemDescriptionInput.setText(null);
+        itemPriceInput.setText(null);
+        numberOfUnitsInput.setText(null);
+        typeOfUnitsInput.setText(null);
+    }
+
     private void calculatePrice() {
         BigDecimal pricePerUnit = new BigDecimal(itemPriceInput.getText().toString().replace("$", "")).divide(new BigDecimal(numberOfUnitsInput.getText().toString()), MathContext.DECIMAL128);
         String outputString = itemDescriptionInput.getText().toString()
                 + " $" + new BigDecimal(pricePerUnit.toString()).setScale(4, RoundingMode.HALF_UP).doubleValue()
                 + " Price Per Unit";
-        homeScreenWelcomeMessage.setText(outputString);
-
+        //homeScreenWelcomeMessage.setText(outputString);
+        Toast.makeText(getApplicationContext(), outputString, Toast.LENGTH_LONG).show();
+        resetInputFields();
         inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();  // Always call the superclass method first
-        itemPriceInput.addTextChangedListener(new MoneyTextWatcher(itemPriceInput));
-        typeOfUnitsInput.setOnKeyListener(typeOfUnitsInputKeyListener);
     }
 }

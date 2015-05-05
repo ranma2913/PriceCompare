@@ -65,9 +65,19 @@
         android:id="@+id/calculatePriceButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_below="@+id/typeOfUnitsInput"
-        android:layout_centerHorizontal="true"
         android:text="Calculate Price" />
+
+    <Button
+        android:id="@+id/clearButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/typeOfUnitsInput"
+        android:layout_alignRight="@+id/typeOfUnitsInput"
+        android:layout_below="@+id/typeOfUnitsInput"
+        android:text="@string/clearButtonText" />
 
     <ListView
         android:id="@+id/listView"
