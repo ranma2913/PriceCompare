@@ -1,4 +1,4 @@
-package com.ranma2913.pricecompare;
+package com.ranma2913.global;
 
 import android.text.Editable;
 import android.text.TextUtils;

@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">PriceCompare</string>
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="homeScreenWelcomeMessage">This is a price comparison app. Enter the values and click Calculate Price. The results will appear below.</string>
     <string name="clearButtonText">Clear</string>
