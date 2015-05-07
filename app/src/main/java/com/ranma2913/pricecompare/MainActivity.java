@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -60,6 +61,7 @@ public class MainActivity extends Activity {
     @SystemService
     InputMethodManager inputManager;
     ArrayList<PriceComparisonVO> priceComparisonVOArrayList;
+    ArrayAdapter<PriceComparisonVO> priceComparisonVOArrayAdapter;
     Manager manager;
     Database database;
     View.OnKeyListener typeOfUnitsInputKeyListener = new View.OnKeyListener() {
@@ -79,6 +81,7 @@ public class MainActivity extends Activity {
         itemPriceInput.addTextChangedListener(new MoneyTextWatcher(itemPriceInput));
         typeOfUnitsInput.setOnKeyListener(typeOfUnitsInputKeyListener);
         initDatabase();
+        initHistoryList();
     }
 
     private void initDatabase() {
@@ -104,6 +107,12 @@ public class MainActivity extends Activity {
         }
     }
 
+    private void initHistoryList() {
+        loadPriceCompareHistoryList();
+        priceComparisonVOArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, priceComparisonVOArrayList);
+        priceCompareHistoryListView.setAdapter(priceComparisonVOArrayAdapter);
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -120,6 +129,7 @@ public class MainActivity extends Activity {
     void clearButton() {
         refreshScreen();
     }
+
 
     private void loadPriceCompareHistoryList() {
         priceComparisonVOArrayList = new ArrayList<>();
@@ -155,6 +165,7 @@ public class MainActivity extends Activity {
         numberOfUnitsInput.setText(null);
         typeOfUnitsInput.setText(null);
         loadPriceCompareHistoryList();
+        priceComparisonVOArrayAdapter.notifyDataSetChanged();
         Log.d(TAG, ".refreshScreen(): finished");
     }
 
@@ -182,6 +193,7 @@ public class MainActivity extends Activity {
         return isValid;
     }
 
+    @SuppressWarnings("ConstantConditions")
     private void calculatePrice() {
         if (validateInputFields()) {
             PriceComparisonVO priceComparisonVO = new PriceComparisonVO(itemDescriptionInput.getText().toString(), itemPriceInput.getText().toString(), numberOfUnitsInput.getText().toString(), typeOfUnitsInput.getText().toString());
@@ -215,7 +227,7 @@ public class MainActivity extends Activity {
         // retrieve the document from the database
         Document retrievedDocument = database.getDocument(docID);
 
-        PriceComparisonVO retrievedPriceComparisonVO = new PriceComparisonVO((Map<String, String>) retrievedDocument.getProperty("priceComparisonVO"));
+//        PriceComparisonVO retrievedPriceComparisonVO = new PriceComparisonVO((Map<String, String>) retrievedDocument.getProperty("priceComparisonVO"));
         Log.d(TAG, ".savePriceComparison(PriceComparisonVO priceComparisonVO): retrievedDocument.getProperties=" + String.valueOf(retrievedDocument.getProperties()));
     }
 }

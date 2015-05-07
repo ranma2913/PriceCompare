@@ -82,9 +82,7 @@ public class PriceComparisonVO {
     }
 
     public String getPricePerUnit() {
-        String pricePerUnit = new BigDecimal(new BigDecimal(itemPrice).divide(new BigDecimal(numberOfUnits), MathContext.DECIMAL128).toString()).setScale(4, RoundingMode.HALF_UP).toString();
-        Log.d(TAG, "PricePerUnit Computed:" + pricePerUnit);
-        return pricePerUnit;
+        return new BigDecimal(new BigDecimal(itemPrice).divide(new BigDecimal(numberOfUnits), MathContext.DECIMAL128).toString()).setScale(4, RoundingMode.HALF_UP).toString();
     }
 
     public HashMap getValueMap() {
@@ -101,5 +99,10 @@ public class PriceComparisonVO {
 
     public String getPricePerUnitString() {
         return itemDescription + ": $" + getPricePerUnit() + " / " + typeOfUnits;
+    }
+
+    @Override
+    public String toString() {
+        return getPricePerUnitString();
     }
 }
