@@ -1,6 +1,7 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
     android:id="@+id/homeScreenLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
@@ -10,6 +11,14 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:weightSum="2"
     tools:context=".HomeScreen">
+
+    <LinearLayout
+        android:id="@+id/hiddenLayout"
+        android:layout_width="0px"
+        android:layout_height="0px"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical"/>
 
     <LinearLayout
         android:layout_width="0dp"
@@ -23,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/homeScreenWelcomeMessage"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="?android:attr/textAppearanceMedium"/>
 
         <EditText
             android:id="@+id/itemDescriptionInput"
@@ -32,7 +41,7 @@
             android:layout_weight="1"
             android:hint="@string/itemDescriptionInputHint"
             android:inputType="textCapWords|textAutoComplete|textAutoCorrect"
-            android:textIsSelectable="true" />
+            android:textIsSelectable="true"/>
 
         <EditText
             android:id="@+id/itemPriceInput"
@@ -41,7 +50,7 @@
             android:layout_weight="1"
             android:ems="10"
             android:hint="@string/itemPriceInputHint"
-            android:inputType="numberDecimal" />
+            android:inputType="numberDecimal"/>
 
         <EditText
             android:id="@+id/numberOfUnitsInput"
@@ -50,7 +59,7 @@
             android:layout_weight="1"
             android:ems="10"
             android:hint="@string/numberOfUnitsInputHint"
-            android:inputType="number" />
+            android:inputType="number"/>
 
         <EditText
             android:id="@+id/typeOfUnitsInput"
@@ -58,7 +67,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="@string/typeOfUnitsInputHint"
-            android:inputType="textCapWords|textAutoComplete|textAutoCorrect" />
+            android:inputType="textCapWords|textAutoComplete|textAutoCorrect"/>
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -71,14 +80,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/calculatePriceButtonText" />
+                android:text="@string/calculatePriceButtonText"/>
 
             <Button
                 android:id="@+id/clearButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/clearButtonText" />
+                android:text="@string/clearButtonText"/>
 
         </LinearLayout>
 
@@ -93,7 +102,7 @@
         <ListView
             android:id="@+id/priceCompareHistoryListView"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"/>
     </LinearLayout>
 
 
