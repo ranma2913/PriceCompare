@@ -45,9 +45,16 @@ apt {
 }
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'PriceCompareKey'
+            keyPassword 'Chobit2913'
+            storeFile file('C:/Android/Workspace/Keystores/PriceCompareKeystore.jks')
+            storePassword 'Chobit2913'
+        }
+    }
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
-
     defaultConfig {
         applicationId "com.ranma2913.pricecompare"
         minSdkVersion 9
@@ -59,6 +66,10 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+        }
+        debug {
+            signingConfig signingConfigs.config
         }
     }
     compileOptions {

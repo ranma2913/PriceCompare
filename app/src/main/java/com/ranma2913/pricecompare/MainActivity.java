@@ -75,7 +75,7 @@ public class MainActivity extends Activity {
         initTypeOfUnitsInputOnKeyListener();
         initItemDescriptionOnFocusListener();
         initDatabase();
-        initHistoryList();
+        initPriceCompareHistory();
     }
 
     private void initItemDescriptionOnFocusListener() {
@@ -128,10 +128,10 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void initHistoryList() {
-        refreshPriceComparisonArrayList();
+    private void initPriceCompareHistory() {
+        loadPriceCompareHistoryArray();
         priceComparisonVOArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, priceComparisonVOArrayList);
-        priceComparisonVOArrayAdapter.setNotifyOnChange(true);
+//        priceComparisonVOArrayAdapter.setNotifyOnChange(true);
         priceCompareHistoryListView.setAdapter(priceComparisonVOArrayAdapter);
     }
 
@@ -146,13 +146,18 @@ public class MainActivity extends Activity {
         calculatePrice();
     }
 
-    @Click
+    @Click(R.id.clearButton)
     void clearButton() {
         refreshScreen();
         linearLayout.requestFocus();
     }
 
-    private void refreshPriceComparisonArrayList() {
+    private void refreshPriceCompareHistoryArray() {
+        loadPriceCompareHistoryArray();
+        priceComparisonVOArrayAdapter.notifyDataSetChanged();
+    }
+
+    private void loadPriceCompareHistoryArray() {
         priceComparisonVOArrayList.removeAll(priceComparisonVOArrayList);
         Query query = database.createAllDocumentsQuery();
         query.setDescending(true);
@@ -164,19 +169,19 @@ public class MainActivity extends Activity {
                 if (document.getProperty("docType").equals("priceComparison")) {
                     PriceComparisonVO newPriceComparisonVO = new PriceComparisonVO((Map<String, String>) document.getProperty("priceComparisonVO"));
                     priceComparisonVOArrayList.add(newPriceComparisonVO);
-                    Log.d(TAG, ".refreshPriceComparisonArrayList(): Price Comparison Loaded =" + newPriceComparisonVO.getValueMap());
+                    Log.d(TAG, ".loadPriceCompareHistoryArray(): Price Comparison Loaded =" + newPriceComparisonVO.getValueMap());
                 }
             }
             Collections.sort(priceComparisonVOArrayList, new PriceComparisonComparator());
-            Log.d(TAG, ".refreshPriceComparisonArrayList(): Sorted List:");
+            Log.d(TAG, ".loadPriceCompareHistoryArray(): Sorted List:");
             for (PriceComparisonVO comparisonVO : priceComparisonVOArrayList) {
-                Log.d(TAG, ".refreshPriceComparisonArrayList(): Price Comparison Loaded =" + comparisonVO.getValueMap());
+                Log.d(TAG, ".loadPriceCompareHistoryArray(): Price Comparison Loaded =" + comparisonVO.getValueMap());
             }
         }
         catch (CouchbaseLiteException e) {
             e.printStackTrace();
         }
-        Log.d(TAG, ".refreshPriceComparisonArrayList(): priceComparisonVOArrayList Size(" + priceComparisonVOArrayList.size() + ")");
+        Log.d(TAG, ".loadPriceCompareHistoryArray(): priceComparisonVOArrayList Size(" + priceComparisonVOArrayList.size() + ")");
     }
 
     private void refreshScreen() {
@@ -185,7 +190,7 @@ public class MainActivity extends Activity {
         itemPriceInput.setText(null);
         numberOfUnitsInput.setText(null);
         typeOfUnitsInput.setText(null);
-        refreshPriceComparisonArrayList();
+        refreshPriceCompareHistoryArray();
         if (getCurrentFocus() != null) {
             inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
