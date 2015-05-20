@@ -1,3 +1,17 @@
+/**
+ * App Build Script
+ *
+ * App Name and Version Variables:
+ */
+ext {
+    androidAppVersionCode = 1
+    //An integer value that represents the version of the application code, relative to other versions.
+    androidAppPrimaryReleaseNumber = 1
+    //An integer value that is the first number in the version name.
+    dependenciesAAVersion = '3.3'
+    dependenciesCouchBaseVersion = '1.0.4'
+}
+
 buildscript {
     repositories {
         mavenCentral()
@@ -5,7 +19,7 @@ buildscript {
     }
     dependencies {
         // replace with the current version of the Android plugin
-        classpath 'com.android.tools.build:gradle:1.2.2'
+        classpath 'com.android.tools.build:gradle:1.2.3'
         // replace with the current version of the android-apt plugin
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
 
@@ -20,16 +34,15 @@ repositories {
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 
-def AAVersion = '3.3'
-def CouchBaseVersion = '1.0.4'
+
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:22.+'
-    compile 'com.android.support:support-v4:19.0.0'
-    apt "org.androidannotations:androidannotations:$AAVersion"
-    compile "org.androidannotations:androidannotations-api:$AAVersion"
-    compile "com.couchbase.lite:couchbase-lite-android:$CouchBaseVersion"
+    compile 'com.android.support:support-v4:22.+'
+    apt "org.androidannotations:androidannotations:$dependenciesAAVersion"
+    compile "org.androidannotations:androidannotations-api:$dependenciesAAVersion"
+    compile "com.couchbase.lite:couchbase-lite-android:$dependenciesCouchBaseVersion"
 }
 
 apt {
@@ -45,31 +58,31 @@ apt {
 }
 
 android {
-    signingConfigs {
-        config {
-            keyAlias 'PriceCompareKey'
-            keyPassword 'Chobit2913'
-            storeFile file('C:/Android/Workspace/Keystores/PriceCompareKeystore.jks')
-            storePassword 'Chobit2913'
-        }
-    }
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
     defaultConfig {
         applicationId "com.ranma2913.pricecompare"
         minSdkVersion 9
         targetSdkVersion 22
-        versionCode 1
+        versionCode androidAppVersionCode
         versionName computeVersionName()
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.config
+            applicationVariants.all { variant ->
+                variant.outputs.each { output ->
+                    def formattedDate = new Date().format('yyyyMMddHHmmss')
+                    def newName = output.outputFile.name
+                    newName = newName.replace("app-", "$rootProject.ext.appName-")
+                    newName = newName.replace("-release", "-release" + formattedDate)
+                    //noinspection GroovyAssignabilityCheck
+                    output.outputFile = new File(output.outputFile.parent, newName)
+                }
+            }
         }
         debug {
-            signingConfig signingConfigs.config
         }
     }
     compileOptions {
@@ -86,5 +99,5 @@ android {
 }
 
 def computeVersionName() {
-    return "1.0"
+    return androidAppPrimaryReleaseNumber + "." + androidAppVersionCode
 }
