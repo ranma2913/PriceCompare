@@ -1,0 +1,1 @@
+App Icons were generated using: https://romannurik.github.io/AndroidAssetStudio/icons-launcher.html
