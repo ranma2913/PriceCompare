@@ -4,10 +4,10 @@
  * App Name and Version Variables:
  */
 ext {
-    androidAppVersionCode = 1
-    //An integer value that represents the version of the application code, relative to other versions.
-    androidAppPrimaryReleaseNumber = 1
     //An integer value that is the first number in the version name.
+    androidAppPrimaryReleaseNumber = 1
+    //An integer value that represents the version of the application code, relative to other versions.
+    androidAppVersionCode = 2
     dependenciesAAVersion = '3.3'
     dependenciesCouchBaseVersion = '1.0.4'
 }
