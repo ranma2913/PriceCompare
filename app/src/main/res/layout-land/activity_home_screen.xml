@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:baselineAligned="false"
     android:orientation="horizontal"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -14,60 +15,64 @@
 
     <LinearLayout
         android:id="@+id/hiddenLayout"
-        android:layout_width="0px"
-        android:layout_height="0px"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:orientation="vertical"/>
 
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1.2"
+        android:layout_height="fill_parent"
+        android:layout_weight="1.1"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/homeScreenWelcomeMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="@string/homeScreenWelcomeMessage"
-            android:textAppearance="?android:attr/textAppearanceMedium"/>
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            />
 
-        <EditText
-            android:id="@+id/itemDescriptionInput"
-            android:layout_width="fill_parent"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="@string/itemDescriptionInputHint"
-            android:inputType="textCapWords|textAutoComplete|textAutoCorrect"
-            android:textIsSelectable="true"/>
+            android:orientation="vertical"
+            >
 
-        <EditText
-            android:id="@+id/itemPriceInput"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"
-            android:hint="@string/itemPriceInputHint"
-            android:inputType="numberDecimal"/>
+            <EditText
+                android:id="@+id/itemDescriptionInput"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/itemDescriptionInputHint"
+                android:inputType="textCapWords|textAutoComplete|textAutoCorrect"
+                android:textIsSelectable="true"
+                />
 
-        <EditText
-            android:id="@+id/numberOfUnitsInput"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"
-            android:hint="@string/numberOfUnitsInputHint"
-            android:inputType="number"/>
+            <EditText
+                android:id="@+id/itemPriceInput"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="@string/itemPriceInputHint"
+                android:inputType="numberDecimal"/>
 
-        <EditText
-            android:id="@+id/typeOfUnitsInput"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="@string/typeOfUnitsInputHint"
-            android:inputType="textCapWords|textAutoComplete|textAutoCorrect"/>
+            <EditText
+                android:id="@+id/numberOfUnitsInput"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="@string/numberOfUnitsInputHint"
+                android:inputType="number"/>
+
+            <EditText
+                android:id="@+id/typeOfUnitsInput"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/typeOfUnitsInputHint"
+                android:inputType="textCapWords|textAutoComplete|textAutoCorrect"/>
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -95,8 +100,8 @@
 
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.8"
+        android:layout_height="fill_parent"
+        android:layout_weight=".9"
         android:orientation="vertical">
 
         <ListView
