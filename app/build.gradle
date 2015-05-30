@@ -6,8 +6,8 @@
 ext {
     //An integer value that is the first number in the version name.
     androidAppPrimaryReleaseNumber = 1
-    //An integer value that represents the version of the application code, relative to other versions.
-    androidAppVersionCode = 2
+    //Application relative release version. Increment every update.
+    androidAppVersionCode = 3
     dependenciesAAVersion = '3.3'
     dependenciesCouchBaseVersion = '1.0.4'
 }
@@ -62,7 +62,7 @@ android {
     buildToolsVersion "22.0.1"
     defaultConfig {
         applicationId "com.ranma2913.pricecompare"
-        minSdkVersion 9
+        minSdkVersion 13
         targetSdkVersion 22
         versionCode androidAppVersionCode
         versionName computeVersionName()

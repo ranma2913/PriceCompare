@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,8 +55,8 @@ public class MainActivity extends Activity {
     @ViewById(R.id.numberOfUnitsInput)
     EditText numberOfUnitsInput;
     @ViewById(R.id.typeOfUnitsInput)
-    EditText typeOfUnitsInput;
-    @ViewsById({R.id.itemDescriptionInput, R.id.itemPriceInput, R.id.numberOfUnitsInput, R.id.typeOfUnitsInput})
+    Spinner typeOfUnitsInputSpinner;
+    @ViewsById({R.id.itemDescriptionInput, R.id.itemPriceInput, R.id.numberOfUnitsInput})
     ArrayList<EditText> editTextArrayList;
     @ViewById(R.id.priceCompareHistoryListView)
     ListView priceCompareHistoryListView;
@@ -72,10 +73,20 @@ public class MainActivity extends Activity {
     protected void init() {
         itemPriceInput.addTextChangedListener(new MoneyTextWatcher(itemPriceInput));
         priceComparisonVOArrayList = new ArrayList<>();
-        initTypeOfUnitsInputOnKeyListener();
-        initItemDescriptionOnFocusListener();
+//        initTypeOfUnitsInputOnKeyListener();
+//        initItemDescriptionOnFocusListener();
         initDatabase();
+        initTypeOfUnitsSpinner();
         initPriceCompareHistory();
+    }
+
+    private void initTypeOfUnitsSpinner() {
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.typeOfUnitsChoicesArray, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        typeOfUnitsInputSpinner.setAdapter(adapter);
     }
 
     private void initItemDescriptionOnFocusListener() {
@@ -95,7 +106,7 @@ public class MainActivity extends Activity {
     }
 
     private void initTypeOfUnitsInputOnKeyListener() {
-        typeOfUnitsInput.setOnKeyListener(new View.OnKeyListener() {
+        typeOfUnitsInputSpinner.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 // If the event is a key-down event on the "enter" button
                 if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
@@ -189,11 +200,11 @@ public class MainActivity extends Activity {
         itemDescriptionInput.setText(null);
         itemPriceInput.setText(null);
         numberOfUnitsInput.setText(null);
-        typeOfUnitsInput.setText(null);
+//        typeOfUnitsInputSpinner.setText(null);
         refreshPriceCompareHistoryArray();
-        if (getCurrentFocus() != null) {
-            inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-        }
+//        if (getCurrentFocus() != null) {
+//            inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+//        }
         Log.d(TAG, ".refreshScreen(): finished");
     }
 
@@ -224,7 +235,7 @@ public class MainActivity extends Activity {
     @SuppressWarnings("ConstantConditions")
     private void calculatePrice() {
         if (validateInputFields()) {
-            PriceComparisonVO priceComparisonVO = new PriceComparisonVO(itemDescriptionInput.getText().toString(), itemPriceInput.getText().toString(), numberOfUnitsInput.getText().toString(), typeOfUnitsInput.getText().toString());
+            PriceComparisonVO priceComparisonVO = new PriceComparisonVO(itemDescriptionInput.getText().toString(), itemPriceInput.getText().toString(), numberOfUnitsInput.getText().toString(), typeOfUnitsInputSpinner.getSelectedItem().toString());
             Toast.makeText(getApplicationContext(), priceComparisonVO.getPricePerUnitString(), Toast.LENGTH_LONG).show();
             savePriceComparison(priceComparisonVO);
             refreshScreen();
