@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:baselineAligned="false"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -15,21 +14,21 @@
 
     <LinearLayout
         android:id="@+id/hiddenLayout"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:orientation="vertical"/>
 
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="fill_parent"
-        android:layout_weight="1.1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/homeScreenWelcomeMessage"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/homeScreenWelcomeMessage"
             android:textSize="@dimen/homeScreenWelcomeMessageTextSize"/>
@@ -43,7 +42,8 @@
             <EditText
                 android:id="@+id/itemDescriptionInput"
                 android:layout_width="fill_parent"
-                android:layout_height="@dimen/inputRowHeight"
+                android:layout_height="40dp"
+                android:layout_weight="1"
                 android:hint="@string/itemDescriptionInputHint"
                 android:inputType="textCapWords|textAutoComplete|textAutoCorrect"
                 android:textIsSelectable="true"
@@ -52,7 +52,8 @@
             <EditText
                 android:id="@+id/itemPriceInput"
                 android:layout_width="fill_parent"
-                android:layout_height="@dimen/inputRowHeight"
+                android:layout_height="40dp"
+                android:layout_weight="1"
                 android:ems="10"
                 android:hint="@string/itemPriceInputHint"
                 android:inputType="numberDecimal"
@@ -65,8 +66,8 @@
 
                 <EditText
                     android:id="@+id/numberOfUnitsInput"
-                    android:layout_width="fill_parent"
-                    android:layout_height="@dimen/inputRowHeight"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
                     android:layout_weight="1"
                     android:ems="10"
                     android:hint="@string/numberOfUnitsInputHint"
@@ -75,24 +76,27 @@
 
                 <Spinner
                     android:id="@+id/typeOfUnitsInput"
-                    android:layout_width="fill_parent"
-                    android:layout_height="@dimen/inputRowHeight"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
                     android:layout_weight="1"
                     android:hint="@string/typeOfUnitsInputHint"
-                    android:inputType="textCapWords|textAutoComplete|textAutoCorrect"/>
+                    android:inputType="textCapWords|textAutoComplete|textAutoCorrect"
+                    />
             </LinearLayout>
+
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:weightSum="2">
+            android:weightSum="2"
+            >
 
             <Button
                 android:id="@+id/calculatePriceButton"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/buttonRowHeight"
+                android:layout_height="40dp"
                 android:layout_weight="1"
                 android:text="@string/calculatePriceButtonText"
                 android:textSize="@dimen/buttonTextSize"/>
@@ -100,7 +104,7 @@
             <Button
                 android:id="@+id/clearButton"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/buttonRowHeight"
+                android:layout_height="40dp"
                 android:layout_weight="1"
                 android:text="@string/clearButtonText"
                 android:textSize="@dimen/buttonTextSize"/>
@@ -110,15 +114,16 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="fill_parent"
-        android:layout_weight=".9"
+        android:layout_weight="0"
         android:orientation="vertical">
 
         <ListView
             android:id="@+id/priceCompareHistoryListView"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="fill_parent"
+            />
     </LinearLayout>
 
 
