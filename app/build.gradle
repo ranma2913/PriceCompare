@@ -6,8 +6,14 @@
 ext {
     //An integer value that is the first number in the version name.
     androidAppPrimaryReleaseNumber = 1
-    //Application relative release version. Increment every update.
-    androidAppVersionCode = 3
+
+    //Increment this number every release that contains UI changes.
+    uiVersionCode = 1
+
+    //AppVersionCode relative release version.
+    //Increment every update.
+    androidAppVersionCode = 4
+
     dependenciesAAVersion = '3.3'
     dependenciesCouchBaseVersion = '1.0.4'
 }
@@ -33,8 +39,6 @@ repositories {
 
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
-
-
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
@@ -64,7 +68,7 @@ android {
         applicationId "com.ranma2913.pricecompare"
         minSdkVersion 13
         targetSdkVersion 22
-        versionCode androidAppVersionCode
+        versionCode androidAppVersionCode()
         versionName computeVersionName()
     }
     buildTypes {
@@ -75,7 +79,7 @@ android {
                 variant.outputs.each { output ->
                     def formattedDate = new Date().format('yyyyMMddHHmmss')
                     def newName = output.outputFile.name
-                    newName = newName.replace("app-", "$rootProject.ext.appName-")
+                    newName = newName.replace("app-", "$rootProject.ext.appName-" + computeVersionName() + "-")
                     newName = newName.replace("-release", "-release" + formattedDate)
                     //noinspection GroovyAssignabilityCheck
                     output.outputFile = new File(output.outputFile.parent, newName)
@@ -99,5 +103,9 @@ android {
 }
 
 def computeVersionName() {
-    return androidAppPrimaryReleaseNumber + "." + androidAppVersionCode
+    return androidAppPrimaryReleaseNumber + "." + uiVersionCode + "." + androidAppVersionCode()
+}
+
+def androidAppVersionCode() {
+    return androidAppVersionCode
 }
