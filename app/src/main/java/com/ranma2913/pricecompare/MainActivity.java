@@ -14,13 +14,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.couchbase.lite.CouchbaseLiteException;
-import com.couchbase.lite.Database;
 import com.couchbase.lite.Document;
-import com.couchbase.lite.Manager;
 import com.couchbase.lite.Query;
 import com.couchbase.lite.QueryEnumerator;
 import com.couchbase.lite.QueryRow;
 import com.couchbase.lite.android.AndroidContext;
+import com.ranma2913.database.DatabaseHelper;
 import com.ranma2913.global.MoneyTextWatcher;
 import com.ranma2913.global.PriceComparisonComparator;
 import com.ranma2913.global.Utils;
@@ -33,7 +32,6 @@ import org.androidannotations.annotations.SystemService;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.ViewsById;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -66,8 +64,7 @@ public class MainActivity extends Activity {
     InputMethodManager inputManager;
     ArrayList<PriceComparisonVO> priceComparisonVOArrayList;
     ArrayAdapter<PriceComparisonVO> priceComparisonVOArrayAdapter;
-    Manager manager;
-    Database database;
+    DatabaseHelper databaseHelper;
 
     @AfterViews
     protected void init() {
@@ -121,22 +118,7 @@ public class MainActivity extends Activity {
     }
 
     private void initDatabase() {
-        if (!Manager.isValidDatabaseName(dbName)) {
-            Log.e(TAG, ".initDatabase(): Bad database name");
-            return;
-        }
-        try {
-            manager = new Manager(new AndroidContext(this), Manager.DEFAULT_OPTIONS);
-            Log.d(TAG, ".initDatabase(): Manager created");
-            database = manager.getDatabase(dbName);
-            Log.d(TAG, ".initDatabase(): Database created");
-        }
-        catch (IOException e) {
-            Log.e(TAG, ".initDatabase(): Cannot create manager object");
-        }
-        catch (CouchbaseLiteException e) {
-            Log.e(TAG, ".initDatabase(): Cannot get database");
-        }
+        databaseHelper = new DatabaseHelper(new AndroidContext(this), dbName);
     }
 
     private void initPriceCompareHistory() {
@@ -170,7 +152,7 @@ public class MainActivity extends Activity {
 
     private void loadPriceCompareHistoryArray() {
         priceComparisonVOArrayList.removeAll(priceComparisonVOArrayList);
-        Query query = database.createAllDocumentsQuery();
+        Query query = databaseHelper.createAllDocumentsQuery();
         query.setDescending(true);
         try {
             QueryEnumerator result = query.run();
@@ -251,7 +233,7 @@ public class MainActivity extends Activity {
         // display the data for the new document
         Log.d(TAG, ".savePriceComparison(PriceComparisonVO priceComparisonVO): docProperties=" + String.valueOf(docProperties));
         // create an empty document
-        Document newDocument = database.createDocument();
+        Document newDocument = databaseHelper.createDocument();
         // add content to document and write the document to the database
         try {
             newDocument.putProperties(docProperties);
@@ -263,7 +245,7 @@ public class MainActivity extends Activity {
         // save the ID of the new document
         String docID = newDocument.getId();
         // retrieve the document from the database
-        Document retrievedDocument = database.getDocument(docID);
+        Document retrievedDocument = databaseHelper.getDocument(docID);
 
 //        PriceComparisonVO retrievedPriceComparisonVO = new PriceComparisonVO((Map<String, String>) retrievedDocument.getProperty("priceComparisonVO"));
         Log.d(TAG, ".savePriceComparison(PriceComparisonVO priceComparisonVO): retrievedDocument.getProperties=" + String.valueOf(retrievedDocument.getProperties()));
