@@ -8,4 +8,15 @@
     <string name="numberOfUnitsInputHint">Number of Units</string>
     <string name="typeOfUnitsInputHint">Type of Units</string>
     <string name="calculatePriceButtonText">Calculate Price</string>
+    <string-array name="typeOfUnitsChoicesArray">
+        <item>unit</item>
+        <item>pound</item>
+        <item>ounce</item>
+        <item>gram</item>
+        <item>roll</item>
+        <item>package</item>
+        <item>can</item>
+        <item>bag</item>
+    </string-array>
+
 </resources>

@@ -7,17 +7,20 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.couchbase.lite.CouchbaseLiteException;
+import com.couchbase.lite.Database;
 import com.couchbase.lite.Document;
+import com.couchbase.lite.Manager;
 import com.couchbase.lite.Query;
 import com.couchbase.lite.QueryEnumerator;
 import com.couchbase.lite.QueryRow;
 import com.couchbase.lite.android.AndroidContext;
-import com.ranma2913.database.DatabaseHelper;
 import com.ranma2913.global.MoneyTextWatcher;
 import com.ranma2913.global.PriceComparisonComparator;
 import com.ranma2913.global.Utils;
@@ -30,6 +33,7 @@ import org.androidannotations.annotations.SystemService;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.ViewsById;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,62 +46,110 @@ public class MainActivity extends Activity {
     final String TAG = "::MainActivity";
     final String dbName = "price_compare_db";
 
-    @ViewById
+    @ViewById(R.id.homeScreenWelcomeMessage)
     TextView homeScreenWelcomeMessage;
-    @ViewById
+    @ViewById(R.id.itemDescriptionInput)
     EditText itemDescriptionInput;
-    @ViewById
+    @ViewById(R.id.itemPriceInput)
     EditText itemPriceInput;
-    @ViewById
+    @ViewById(R.id.numberOfUnitsInput)
     EditText numberOfUnitsInput;
-    @ViewById
-    EditText typeOfUnitsInput;
-    @ViewsById({R.id.itemDescriptionInput, R.id.itemPriceInput, R.id.numberOfUnitsInput, R.id.typeOfUnitsInput})
+    @ViewById(R.id.typeOfUnitsInput)
+    Spinner typeOfUnitsInputSpinner;
+    @ViewsById({R.id.itemDescriptionInput, R.id.itemPriceInput, R.id.numberOfUnitsInput})
     ArrayList<EditText> editTextArrayList;
-    @ViewById
+    @ViewById(R.id.priceCompareHistoryListView)
     ListView priceCompareHistoryListView;
+    @ViewById(R.id.hiddenLayout)
+    LinearLayout linearLayout;
     @SystemService
     InputMethodManager inputManager;
     ArrayList<PriceComparisonVO> priceComparisonVOArrayList;
     ArrayAdapter<PriceComparisonVO> priceComparisonVOArrayAdapter;
-    DatabaseHelper databaseHelper;
-
-    View.OnKeyListener typeOfUnitsInputKeyListener = new View.OnKeyListener() {
-        public boolean onKey(View v, int keyCode, KeyEvent event) {
-            // If the event is a key-down event on the "enter" button
-            if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                // Perform action on key press
-                calculatePrice();//match this behavior to your 'Send' (or Confirm) button
-                return true;
-            }
-            return false;
-        }
-    };
+    Manager manager;
+    Database database;
 
     @AfterViews
     protected void init() {
         itemPriceInput.addTextChangedListener(new MoneyTextWatcher(itemPriceInput));
-        typeOfUnitsInput.setOnKeyListener(typeOfUnitsInputKeyListener);
+        priceComparisonVOArrayList = new ArrayList<>();
+//        initTypeOfUnitsInputOnKeyListener();
+//        initItemDescriptionOnFocusListener();
         initDatabase();
-        initHistoryList();
+        initTypeOfUnitsSpinner();
+        initPriceCompareHistory();
+    }
+
+    private void initTypeOfUnitsSpinner() {
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.typeOfUnitsChoicesArray, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        typeOfUnitsInputSpinner.setAdapter(adapter);
+    }
+
+    private void initItemDescriptionOnFocusListener() {
+        itemDescriptionInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    try {
+                        inputManager.showSoftInput(itemDescriptionInput, InputMethodManager.SHOW_IMPLICIT);
+                    }
+                    catch (NumberFormatException e) {
+                        Log.e(TAG, ".initItemDescriptionOnFocusListener(): Item description focus listener ERROR");
+                    }
+                }
+            }
+        });
+        Log.d(TAG, ".initItemDescriptionOnFocusListener(): Item description focus listener set.");
+    }
+
+    private void initTypeOfUnitsInputOnKeyListener() {
+        typeOfUnitsInputSpinner.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                // If the event is a key-down event on the "enter" button
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    // Perform action on key press
+                    calculatePrice();//match this behavior to your 'Send' (or Confirm) button
+                    return true;
+                }
+                return false;
+            }
+        });
+        Log.d(TAG, ".initTypeOfUnitsInputOnKeyListener(): Type of units input key listener set.");
     }
 
     private void initDatabase() {
-        databaseHelper = new DatabaseHelper(new AndroidContext(this), dbName);
-
+        if (!Manager.isValidDatabaseName(dbName)) {
+            Log.e(TAG, ".initDatabase(): Bad database name");
+            return;
+        }
+        try {
+            manager = new Manager(new AndroidContext(this), Manager.DEFAULT_OPTIONS);
+            Log.d(TAG, ".initDatabase(): Manager created");
+            database = manager.getDatabase(dbName);
+            Log.d(TAG, ".initDatabase(): Database created");
+        }
+        catch (IOException e) {
+            Log.e(TAG, ".initDatabase(): Cannot create manager object");
+        }
+        catch (CouchbaseLiteException e) {
+            Log.e(TAG, ".initDatabase(): Cannot get database");
+        }
     }
 
-    private void initHistoryList() {
-        loadPriceCompareHistoryList();
+    private void initPriceCompareHistory() {
+        loadPriceCompareHistoryArray();
         priceComparisonVOArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, priceComparisonVOArrayList);
+//        priceComparisonVOArrayAdapter.setNotifyOnChange(true);
         priceCompareHistoryListView.setAdapter(priceComparisonVOArrayAdapter);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        loadPriceCompareHistoryList();
-
+        refreshScreen();
     }
 
     @Click
@@ -105,15 +157,20 @@ public class MainActivity extends Activity {
         calculatePrice();
     }
 
-    @Click
+    @Click(R.id.clearButton)
     void clearButton() {
         refreshScreen();
+        linearLayout.requestFocus();
     }
 
+    private void refreshPriceCompareHistoryArray() {
+        loadPriceCompareHistoryArray();
+        priceComparisonVOArrayAdapter.notifyDataSetChanged();
+    }
 
-    private void loadPriceCompareHistoryList() {
-        priceComparisonVOArrayList = new ArrayList<>();
-        Query query = databaseHelper.createAllDocumentsQuery();
+    private void loadPriceCompareHistoryArray() {
+        priceComparisonVOArrayList.removeAll(priceComparisonVOArrayList);
+        Query query = database.createAllDocumentsQuery();
         query.setDescending(true);
         try {
             QueryEnumerator result = query.run();
@@ -121,21 +178,21 @@ public class MainActivity extends Activity {
                 QueryRow row = result.next();
                 Document document = row.getDocument();
                 if (document.getProperty("docType").equals("priceComparison")) {
-                    PriceComparisonVO comparisonVO = new PriceComparisonVO((Map<String, String>) document.getProperty("priceComparisonVO"));
-                    priceComparisonVOArrayList.add(comparisonVO);
-                    Log.d(TAG, ".loadPriceCompareHistoryList(): Price Comparison Loaded =" + comparisonVO.getValueMap());
+                    PriceComparisonVO newPriceComparisonVO = new PriceComparisonVO((Map<String, String>) document.getProperty("priceComparisonVO"));
+                    priceComparisonVOArrayList.add(newPriceComparisonVO);
+                    Log.d(TAG, ".loadPriceCompareHistoryArray(): Price Comparison Loaded =" + newPriceComparisonVO.getValueMap());
                 }
             }
             Collections.sort(priceComparisonVOArrayList, new PriceComparisonComparator());
-            Log.d(TAG, ".loadPriceCompareHistoryList(): Sorted List:");
+            Log.d(TAG, ".loadPriceCompareHistoryArray(): Sorted List:");
             for (PriceComparisonVO comparisonVO : priceComparisonVOArrayList) {
-                Log.d(TAG, ".loadPriceCompareHistoryList(): Price Comparison Loaded =" + comparisonVO.getValueMap());
+                Log.d(TAG, ".loadPriceCompareHistoryArray(): Price Comparison Loaded =" + comparisonVO.getValueMap());
             }
         }
         catch (CouchbaseLiteException e) {
             e.printStackTrace();
         }
-        Log.d(TAG, ".loadPriceCompareHistoryList(): priceComparisonVOArrayList Size(" + priceComparisonVOArrayList.size() + ")");
+        Log.d(TAG, ".loadPriceCompareHistoryArray(): priceComparisonVOArrayList Size(" + priceComparisonVOArrayList.size() + ")");
     }
 
     private void refreshScreen() {
@@ -143,9 +200,11 @@ public class MainActivity extends Activity {
         itemDescriptionInput.setText(null);
         itemPriceInput.setText(null);
         numberOfUnitsInput.setText(null);
-        typeOfUnitsInput.setText(null);
-        loadPriceCompareHistoryList();
-        priceComparisonVOArrayAdapter.notifyDataSetChanged();
+//        typeOfUnitsInputSpinner.setText(null);
+        refreshPriceCompareHistoryArray();
+//        if (getCurrentFocus() != null) {
+//            inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+//        }
         Log.d(TAG, ".refreshScreen(): finished");
     }
 
@@ -176,11 +235,10 @@ public class MainActivity extends Activity {
     @SuppressWarnings("ConstantConditions")
     private void calculatePrice() {
         if (validateInputFields()) {
-            PriceComparisonVO priceComparisonVO = new PriceComparisonVO(itemDescriptionInput.getText().toString(), itemPriceInput.getText().toString(), numberOfUnitsInput.getText().toString(), typeOfUnitsInput.getText().toString());
+            PriceComparisonVO priceComparisonVO = new PriceComparisonVO(itemDescriptionInput.getText().toString(), itemPriceInput.getText().toString(), numberOfUnitsInput.getText().toString(), typeOfUnitsInputSpinner.getSelectedItem().toString());
             Toast.makeText(getApplicationContext(), priceComparisonVO.getPricePerUnitString(), Toast.LENGTH_LONG).show();
             savePriceComparison(priceComparisonVO);
             refreshScreen();
-            inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
     }
 
@@ -193,7 +251,7 @@ public class MainActivity extends Activity {
         // display the data for the new document
         Log.d(TAG, ".savePriceComparison(PriceComparisonVO priceComparisonVO): docProperties=" + String.valueOf(docProperties));
         // create an empty document
-        Document newDocument = databaseHelper.createDocument();
+        Document newDocument = database.createDocument();
         // add content to document and write the document to the database
         try {
             newDocument.putProperties(docProperties);
@@ -205,7 +263,7 @@ public class MainActivity extends Activity {
         // save the ID of the new document
         String docID = newDocument.getId();
         // retrieve the document from the database
-        Document retrievedDocument = databaseHelper.getDocument(docID);
+        Document retrievedDocument = database.getDocument(docID);
 
 //        PriceComparisonVO retrievedPriceComparisonVO = new PriceComparisonVO((Map<String, String>) retrievedDocument.getProperty("priceComparisonVO"));
         Log.d(TAG, ".savePriceComparison(PriceComparisonVO priceComparisonVO): retrievedDocument.getProperties=" + String.valueOf(retrievedDocument.getProperties()));

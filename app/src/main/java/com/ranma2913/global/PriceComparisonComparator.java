@@ -15,6 +15,6 @@ public class PriceComparisonComparator implements Comparator<PriceComparisonVO> 
         String creationDate1 = lhs.getCreationDate();
         String creationDate2 = rhs.getCreationDate();
         // ascending order (descending order would be: name2.compareTo(name1))
-        return creationDate1.compareTo(creationDate2);
+        return creationDate2.compareTo(creationDate1);
     }
 }
