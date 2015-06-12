@@ -5,7 +5,7 @@ buildscript {
     }
     dependencies {
         // replace with the current version of the Android plugin
-        classpath 'com.android.tools.build:gradle:1.2.2'
+        classpath 'com.android.tools.build:gradle:1.2.3'
         // replace with the current version of the android-apt plugin
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
 
@@ -22,6 +22,10 @@ apply plugin: 'android-apt'
 
 def AAVersion = '3.3'
 def CouchBaseVersion = '1.0.4'
+
+def mainAppVersion() {
+    return "1"
+}
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
@@ -75,5 +79,5 @@ android {
 }
 
 def computeVersionName() {
-    return "1.0"
+    return mainAppVersion() + "." + this.version
 }

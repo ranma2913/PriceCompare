@@ -12,13 +12,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.couchbase.lite.CouchbaseLiteException;
-import com.couchbase.lite.Database;
 import com.couchbase.lite.Document;
-import com.couchbase.lite.Manager;
 import com.couchbase.lite.Query;
 import com.couchbase.lite.QueryEnumerator;
 import com.couchbase.lite.QueryRow;
 import com.couchbase.lite.android.AndroidContext;
+import com.ranma2913.database.DatabaseHelper;
 import com.ranma2913.global.MoneyTextWatcher;
 import com.ranma2913.global.PriceComparisonComparator;
 import com.ranma2913.global.Utils;
@@ -31,7 +30,6 @@ import org.androidannotations.annotations.SystemService;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.ViewsById;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,26 +42,26 @@ public class MainActivity extends Activity {
     final String TAG = "::MainActivity";
     final String dbName = "price_compare_db";
 
-    @ViewById(R.id.homeScreenWelcomeMessage)
+    @ViewById
     TextView homeScreenWelcomeMessage;
-    @ViewById(R.id.itemDescriptionInput)
+    @ViewById
     EditText itemDescriptionInput;
-    @ViewById(R.id.itemPriceInput)
+    @ViewById
     EditText itemPriceInput;
-    @ViewById(R.id.numberOfUnitsInput)
+    @ViewById
     EditText numberOfUnitsInput;
-    @ViewById(R.id.typeOfUnitsInput)
+    @ViewById
     EditText typeOfUnitsInput;
     @ViewsById({R.id.itemDescriptionInput, R.id.itemPriceInput, R.id.numberOfUnitsInput, R.id.typeOfUnitsInput})
     ArrayList<EditText> editTextArrayList;
-    @ViewById(R.id.priceCompareHistoryListView)
+    @ViewById
     ListView priceCompareHistoryListView;
     @SystemService
     InputMethodManager inputManager;
     ArrayList<PriceComparisonVO> priceComparisonVOArrayList;
     ArrayAdapter<PriceComparisonVO> priceComparisonVOArrayAdapter;
-    Manager manager;
-    Database database;
+    DatabaseHelper databaseHelper;
+
     View.OnKeyListener typeOfUnitsInputKeyListener = new View.OnKeyListener() {
         public boolean onKey(View v, int keyCode, KeyEvent event) {
             // If the event is a key-down event on the "enter" button
@@ -85,26 +83,8 @@ public class MainActivity extends Activity {
     }
 
     private void initDatabase() {
-        if (!Manager.isValidDatabaseName(dbName)) {
-            Log.e(TAG, ".initDatabase(): Bad database name");
-            return;
-        }
-        try {
-            manager = new Manager(new AndroidContext(this), Manager.DEFAULT_OPTIONS);
-            Log.d(TAG, ".initDatabase(): Manager created");
-        }
-        catch (IOException e) {
-            Log.e(TAG, ".initDatabase(): Cannot create manager object");
-            return;
-        }
-        try {
-            database = manager.getDatabase(dbName);
-            Log.d(TAG, ".initDatabase(): Database created");
+        databaseHelper = new DatabaseHelper(new AndroidContext(this), dbName);
 
-        }
-        catch (CouchbaseLiteException e) {
-            Log.e(TAG, ".initDatabase(): Cannot get database");
-        }
     }
 
     private void initHistoryList() {
@@ -133,7 +113,7 @@ public class MainActivity extends Activity {
 
     private void loadPriceCompareHistoryList() {
         priceComparisonVOArrayList = new ArrayList<>();
-        Query query = database.createAllDocumentsQuery();
+        Query query = databaseHelper.createAllDocumentsQuery();
         query.setDescending(true);
         try {
             QueryEnumerator result = query.run();
@@ -213,7 +193,7 @@ public class MainActivity extends Activity {
         // display the data for the new document
         Log.d(TAG, ".savePriceComparison(PriceComparisonVO priceComparisonVO): docProperties=" + String.valueOf(docProperties));
         // create an empty document
-        Document newDocument = database.createDocument();
+        Document newDocument = databaseHelper.createDocument();
         // add content to document and write the document to the database
         try {
             newDocument.putProperties(docProperties);
@@ -225,7 +205,7 @@ public class MainActivity extends Activity {
         // save the ID of the new document
         String docID = newDocument.getId();
         // retrieve the document from the database
-        Document retrievedDocument = database.getDocument(docID);
+        Document retrievedDocument = databaseHelper.getDocument(docID);
 
 //        PriceComparisonVO retrievedPriceComparisonVO = new PriceComparisonVO((Map<String, String>) retrievedDocument.getProperty("priceComparisonVO"));
         Log.d(TAG, ".savePriceComparison(PriceComparisonVO priceComparisonVO): retrievedDocument.getProperties=" + String.valueOf(retrievedDocument.getProperties()));
