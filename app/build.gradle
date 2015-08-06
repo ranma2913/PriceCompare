@@ -25,7 +25,7 @@ buildscript {
     }
     dependencies {
         // replace with the current version of the Android plugin
-        classpath 'com.android.tools.build:gradle:1.2.3'
+        classpath 'com.android.tools.build:gradle:1.2.2'
         // replace with the current version of the android-apt plugin
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.4'
 
@@ -40,13 +40,16 @@ repositories {
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 
+def AAVersion = '3.3'
+def CouchBaseVersion = '1.0.4'
+
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:22.+'
-    compile 'com.android.support:support-v4:22.+'
-    apt "org.androidannotations:androidannotations:$dependenciesAAVersion"
-    compile "org.androidannotations:androidannotations-api:$dependenciesAAVersion"
-    compile "com.couchbase.lite:couchbase-lite-android:$dependenciesCouchBaseVersion"
+    compile 'com.android.support:support-v4:19.0.0'
+    apt "org.androidannotations:androidannotations:$AAVersion"
+    compile "org.androidannotations:androidannotations-api:$AAVersion"
+    compile "com.couchbase.lite:couchbase-lite-android:$CouchBaseVersion"
 }
 
 apt {
@@ -64,29 +67,18 @@ apt {
 android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
+
     defaultConfig {
         applicationId "com.ranma2913.pricecompare"
-        minSdkVersion 13
+        minSdkVersion 9
         targetSdkVersion 22
-        versionCode androidAppVersionCode()
+        versionCode 1
         versionName computeVersionName()
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            applicationVariants.all { variant ->
-                variant.outputs.each { output ->
-                    def formattedDate = new Date().format('yyyyMMddHHmmss')
-                    def newName = output.outputFile.name
-                    newName = newName.replace("app-", "$rootProject.ext.appName-" + computeVersionName() + "-")
-                    newName = newName.replace("-release", "-release" + formattedDate)
-                    //noinspection GroovyAssignabilityCheck
-                    output.outputFile = new File(output.outputFile.parent, newName)
-                }
-            }
-        }
-        debug {
         }
     }
     compileOptions {
@@ -103,9 +95,5 @@ android {
 }
 
 def computeVersionName() {
-    return androidAppPrimaryReleaseNumber + "." + uiVersionCode + "." + androidAppVersionCode()
-}
-
-def androidAppVersionCode() {
-    return androidAppVersionCode
+    return "1.0"
 }
