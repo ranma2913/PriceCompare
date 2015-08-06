@@ -14,8 +14,8 @@ ext {
     //Increment every update.
     androidAppVersionCode = 4
 
-    dependenciesAAVersion = '3.3'
-    dependenciesCouchBaseVersion = '1.0.4'
+    dependenciesAAVersion = '3.3.2'
+    dependenciesCouchBaseVersion = '1.1.0'
 }
 
 buildscript {

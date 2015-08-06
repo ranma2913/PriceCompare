@@ -1,6 +1,7 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
     android:id="@+id/homeScreenLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -17,7 +18,8 @@
         android:layout_height="0dp"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:orientation="vertical" />
+        android:orientation="vertical"
+        tools:ignore="Suspicious0dp"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -32,56 +34,6 @@
             android:text="@string/homeScreenWelcomeMessage"
             android:textSize="@dimen/homeScreenWelcomeMessageTextSize" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <EditText
-                android:id="@+id/itemDescriptionInput"
-                android:layout_width="fill_parent"
-                android:layout_height="40dp"
-                android:layout_weight="1"
-                android:hint="@string/itemDescriptionInputHint"
-                android:inputType="textCapWords|textAutoComplete|textAutoCorrect"
-                android:textIsSelectable="true"
-                android:textSize="@dimen/inputTextSize" />
-
-            <EditText
-                android:id="@+id/itemPriceInput"
-                android:layout_width="fill_parent"
-                android:layout_height="40dp"
-                android:layout_weight="1"
-                android:ems="10"
-                android:hint="@string/itemPriceInputHint"
-                android:inputType="numberDecimal"
-                android:textSize="@dimen/inputTextSize" />
-
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <EditText
-                    android:id="@+id/numberOfUnitsInput"
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:ems="10"
-                    android:hint="@string/numberOfUnitsInputHint"
-                    android:inputType="numberDecimal"
-                    android:textSize="@dimen/inputTextSize" />
-
-                <Spinner
-                    android:id="@+id/typeOfUnitsInput"
-                    android:layout_width="0dp"
-                    android:layout_height="40dp"
-                    android:layout_weight="1"
-                    android:hint="@string/typeOfUnitsInputHint"
-                    android:inputType="textCapWords|textAutoComplete|textAutoCorrect" />
-            </LinearLayout>
-
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -90,21 +42,11 @@
             android:weightSum="2">
 
             <Button
-                android:id="@+id/calculatePriceButton"
-                android:layout_width="wrap_content"
+                android:id="@+id/addItemButton"
+                android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_weight="1"
-                android:text="@string/calculatePriceButtonText"
+                android:text="@string/addNewItemButtonText"
                 android:textSize="@dimen/buttonTextSize" />
-
-            <Button
-                android:id="@+id/clearButton"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_weight="1"
-                android:text="@string/clearButtonText"
-                android:textSize="@dimen/buttonTextSize" />
-
         </LinearLayout>
 
     </LinearLayout>
