@@ -11,6 +11,7 @@ import com.couchbase.lite.QueryEnumerator;
 import com.couchbase.lite.QueryRow;
 import com.couchbase.lite.android.AndroidContext;
 import com.ranma2913.global.Constants;
+import com.ranma2913.global.Utils;
 
 import org.androidannotations.annotations.EBean;
 
@@ -69,7 +70,7 @@ public class DatabaseDaoImp implements DatabaseDAO {
         HashMap<String, String> newProperties = new HashMap<>();
         newProperties.put("storeName", storeName);
         newProperties.put("itemDescription", itemDescription);
-        newProperties.put("itemPrice", itemPrice);
+        newProperties.put("itemPrice", Utils.formatCleanPriceString(itemPrice));
         newProperties.put("numberOfUnits", numberOfUnits);
         newProperties.put("typeOfUnits", typeOfUnits);
 

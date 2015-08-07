@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.ranma2913.global.MoneyTextWatcher;
 import com.ranma2913.global.Utils;
 
 import org.androidannotations.annotations.AfterViews;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 @EActivity(R.layout.activity_enter_item)
 public class EnterItemActivity extends AppCompatActivity {
     final String TAG = EnterItemActivity.class.getName();
+
     @ViewById(R.id.itemDescriptionInput)
     EditText itemDescriptionInput;
     @ViewById(R.id.itemPriceInput)
@@ -66,23 +68,7 @@ public class EnterItemActivity extends AppCompatActivity {
     }
 
     @AfterViews
-    protected void init() {
-//        itemPriceInput.addTextChangedListener(new MoneyTextWatcher(itemPriceInput));
-//        initTypeOfUnitsInputOnKeyListener();
-//        initItemDescriptionOnFocusListener();
-        initTypeOfUnitsSpinner();
-    }
-
-    private void refreshScreen() {
-        Log.d(TAG, ".refreshScreen(): started");
-        itemStoreInput.setText(null);
-        itemDescriptionInput.setText(null);
-        itemPriceInput.setText(null);
-        numberOfUnitsInput.setText(null);
-        Log.d(TAG, ".refreshScreen(): finished");
-    }
-
-    private void initTypeOfUnitsSpinner() {
+    void initTypeOfUnitsSpinner() {
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.typeOfUnitsChoicesArray, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
@@ -91,22 +77,13 @@ public class EnterItemActivity extends AppCompatActivity {
         typeOfUnitsInputSpinner.setAdapter(adapter);
     }
 
-//    private void initItemDescriptionOnFocusListener() {
-//        itemDescriptionInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-//            public void onFocusChange(View v, boolean hasFocus) {
-//                if (hasFocus) {
-//                    try {
-//                        inputManager.showSoftInput(itemDescriptionInput, InputMethodManager.SHOW_IMPLICIT);
-//                    } catch (NumberFormatException e) {
-//                        Log.e(TAG, ".initItemDescriptionOnFocusListener(): Item description focus listener ERROR");
-//                    }
-//                }
-//            }
-//        });
-//        Log.d(TAG, ".initItemDescriptionOnFocusListener(): Item description focus listener set.");
-//    }
+    @AfterViews
+    void initMoneyTextWatcher() {
+        itemPriceInput.addTextChangedListener(new MoneyTextWatcher(itemPriceInput));
+    }
 
-    private void initTypeOfUnitsInputOnKeyListener() {
+    @AfterViews
+    void initTypeOfUnitsInputOnKeyListener() {
         typeOfUnitsInputSpinner.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 // If the event is a key-down event on the "enter" button
@@ -119,6 +96,15 @@ public class EnterItemActivity extends AppCompatActivity {
             }
         });
         Log.d(TAG, ".initTypeOfUnitsInputOnKeyListener(): Type of units input key listener set.");
+    }
+
+    void refreshScreen() {
+        Log.d(TAG, ".refreshScreen(): started");
+        itemStoreInput.setText(null);
+        itemDescriptionInput.setText(null);
+        itemPriceInput.setText(null);
+        numberOfUnitsInput.setText(null);
+        Log.d(TAG, ".refreshScreen(): finished");
     }
 
     @Click(R.id.clearButton)
