@@ -35,14 +35,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.ranma2913.pricecompare.activities.MainActivity_"/>
         </activity>
-        <activity
-            android:name=".activities.SettingsActivity_"
-            android:label="@string/title_activity_settings"
-            android:parentActivityName=".activities.MainActivity_">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.ranma2913.pricecompare.activities.MainActivity_"/>
-        </activity>
     </application>
 
 </manifest>
