@@ -1,4 +1,4 @@
-package com.ranma2913.pricecompare;
+package com.ranma2913.pricecompare.database;
 
 /**
  * Created by jsticha on 8/5/2015.
@@ -7,6 +7,8 @@ package com.ranma2913.pricecompare;
 import android.content.Context;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.ranma2913.pricecompare.R;
 
 import org.androidannotations.annotations.EViewGroup;
 import org.androidannotations.annotations.ViewById;

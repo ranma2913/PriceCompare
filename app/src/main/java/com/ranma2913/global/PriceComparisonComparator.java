@@ -1,6 +1,6 @@
 package com.ranma2913.global;
 
-import com.ranma2913.pricecompare.PriceComparison;
+import com.ranma2913.pricecompare.database.PriceComparison;
 
 import java.util.Comparator;
 

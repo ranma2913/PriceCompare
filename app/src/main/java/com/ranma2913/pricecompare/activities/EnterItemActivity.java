@@ -1,10 +1,8 @@
-package com.ranma2913.pricecompare;
+package com.ranma2913.pricecompare.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -13,11 +11,17 @@ import android.widget.Toast;
 
 import com.ranma2913.global.MoneyTextWatcher;
 import com.ranma2913.global.Utils;
+import com.ranma2913.pricecompare.R;
+import com.ranma2913.pricecompare.database.DatabaseDAO;
+import com.ranma2913.pricecompare.database.DatabaseDaoImpl;
+import com.ranma2913.pricecompare.database.PriceComparison;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.OptionsItem;
+import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.ViewsById;
 
@@ -25,6 +29,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 
 @EActivity(R.layout.activity_enter_item)
+@OptionsMenu(R.menu.menu_enter_item)
 public class EnterItemActivity extends AppCompatActivity {
     final String TAG = EnterItemActivity.class.getName();
 
@@ -42,30 +47,8 @@ public class EnterItemActivity extends AppCompatActivity {
     @ViewsById({R.id.itemDescriptionInput, R.id.itemPriceInput, R.id.numberOfUnitsInput, R.id.itemStoreInput})
     ArrayList<EditText> editTextArrayList;
 
-    @Bean(DatabaseDaoImp.class)
+    @Bean(DatabaseDaoImpl.class)
     DatabaseDAO databaseDAO;
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_enter_item, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     @AfterViews
     void initTypeOfUnitsSpinner() {
@@ -96,6 +79,12 @@ public class EnterItemActivity extends AppCompatActivity {
             }
         });
         Log.d(TAG, ".initTypeOfUnitsInputOnKeyListener(): Type of units input key listener set.");
+    }
+
+    @OptionsItem(R.id.about)
+    public boolean aboutSelected() {
+        Toast.makeText(getApplicationContext(), "About menu item pressed", Toast.LENGTH_SHORT).show();
+        return true;
     }
 
     void refreshScreen() {

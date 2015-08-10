@@ -19,11 +19,12 @@
         <item>bag</item>
     </string-array>
     <string name="title_activity_home_screen">HomeScreenActivity</string>
-
+    <string name="delete_database">Erase all Price Comparisons?</string>
     <string name="hello_world">Hello world!</string>
     <string name="splash_screen_text">com.ranma2913.pricecompare</string>
     <string name="title_activity_enter_item">EnterItemActivity</string>
     <string name="addNewItemButtonText">Add New Item</string>
     <string name="itemStoreInputHint">Store Name</string>
-
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
 </resources>

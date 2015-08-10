@@ -1,4 +1,4 @@
-package com.ranma2913.pricecompare;
+package com.ranma2913.pricecompare.database;
 
 import android.content.Context;
 import android.view.View;
@@ -21,7 +21,7 @@ public class PriceComparisonAdapter extends BaseAdapter {
 
     ArrayList<PriceComparison> priceComparisons;
 
-    @Bean(DatabaseDaoImp.class)
+    @Bean(DatabaseDaoImpl.class)
     DatabaseDAO databaseDAO;
 
     @RootContext
@@ -60,6 +60,11 @@ public class PriceComparisonAdapter extends BaseAdapter {
     @Override
     public long getItemId(int position) {
         return position;
+    }
+
+    public void refreshData() {
+        priceComparisons = databaseDAO.getAllPriceComparisons();
+        notifyDataSetChanged();
     }
 }
 

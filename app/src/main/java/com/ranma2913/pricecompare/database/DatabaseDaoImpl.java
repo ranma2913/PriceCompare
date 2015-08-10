@@ -1,4 +1,4 @@
-package com.ranma2913.pricecompare;
+package com.ranma2913.pricecompare.database;
 
 import android.content.Context;
 import android.util.Log;
@@ -24,13 +24,13 @@ import java.util.Map;
  * Created by jsticha on 8/4/2015.
  */
 @EBean
-public class DatabaseDaoImp implements DatabaseDAO {
+public class DatabaseDaoImpl implements DatabaseDAO {
 
-    final String TAG = DatabaseDaoImp.class.getName();
+    final String TAG = DatabaseDaoImpl.class.getName();
     Manager manager;
     Database database;
 
-    public DatabaseDaoImp(Context context) {
+    public DatabaseDaoImpl(Context context) {
         if (!Manager.isValidDatabaseName(Constants.PRICE_COMPARE_DB_NAME)) {
             Log.e(TAG, ".initDatabase(): Bad database name");
             return;
@@ -66,6 +66,7 @@ public class DatabaseDaoImp implements DatabaseDAO {
         return documentId;
     }
 
+    @Override
     public PriceComparison saveNewPriceComparison(String storeName, String itemDescription, String itemPrice, String numberOfUnits, String typeOfUnits) {
         HashMap<String, String> newProperties = new HashMap<>();
         newProperties.put("storeName", storeName);
@@ -84,6 +85,20 @@ public class DatabaseDaoImp implements DatabaseDAO {
         return new PriceComparison(documentId, comparisonMap);
     }
 
+    @Override
+    public boolean deleteDatabase() {
+        try {
+            database.delete();
+            Log.d(TAG, ".deleteDatabase: Database successfully deleted");
+            return true;
+        } catch (CouchbaseLiteException e) {
+            Log.e(TAG, ".deleteDatabase: Cannot delete database", e);
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
     public PriceComparison updatePriceComparison(PriceComparison docWithUpdates) {
         //get the document from the database
         Document retrievedDocument = database.getDocument(docWithUpdates.getDocumentID());
@@ -104,6 +119,7 @@ public class DatabaseDaoImp implements DatabaseDAO {
         return new PriceComparison(updatedDocument.getId(), comparisonMap);
     }
 
+    @Override
     public boolean deletePriceComparison(PriceComparison docToDelete) {
         Document retrievedDocument = database.getDocument(docToDelete.getDocumentID());
         Log.d(TAG, ".deletePriceComparison: Document to delete=" + String.valueOf(retrievedDocument));
@@ -117,6 +133,7 @@ public class DatabaseDaoImp implements DatabaseDAO {
         return retrievedDocument.isDeleted();
     }
 
+    @Override
     public ArrayList<PriceComparison> getAllPriceComparisons() {
         Log.d(TAG, ".getAllPriceComparisons enter method");
         ArrayList<PriceComparison> allPriceComparisons = new ArrayList<>();

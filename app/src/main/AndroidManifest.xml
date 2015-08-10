@@ -11,7 +11,7 @@
 
         <!-- Splash screen -->
         <activity
-            android:name=".SplashScreenActivity_"
+            android:name=".activities.SplashScreenActivity_"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -22,18 +22,26 @@
 
         <!-- Main activity -->
         <activity
-            android:name=".MainActivity_"
+            android:name=".activities.MainActivity_"
             android:label="@string/app_name"
             android:windowSoftInputMode="stateHidden|adjustPan">
         </activity>
         <activity
-            android:name=".EnterItemActivity_"
+            android:name=".activities.EnterItemActivity_"
             android:label="@string/title_activity_enter_item"
-            android:parentActivityName=".MainActivity_"
+            android:parentActivityName=".activities.MainActivity_"
             android:windowSoftInputMode="stateVisible">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.ranma2913.pricecompare.MainActivity_"/>
+                android:value="com.ranma2913.pricecompare.activities.MainActivity_"/>
+        </activity>
+        <activity
+            android:name=".activities.SettingsActivity_"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".activities.MainActivity_">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.ranma2913.pricecompare.activities.MainActivity_"/>
         </activity>
     </application>
 

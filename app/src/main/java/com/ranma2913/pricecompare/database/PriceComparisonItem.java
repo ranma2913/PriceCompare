@@ -1,4 +1,4 @@
-package com.ranma2913.pricecompare;
+package com.ranma2913.pricecompare.database;
 
 /**
  * Created by jsticha on 8/4/2015.

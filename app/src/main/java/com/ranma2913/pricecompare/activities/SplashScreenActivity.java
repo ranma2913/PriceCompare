@@ -1,9 +1,11 @@
-package com.ranma2913.pricecompare;
+package com.ranma2913.pricecompare.activities;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+
+import com.ranma2913.pricecompare.R;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;

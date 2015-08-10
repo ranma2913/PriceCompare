@@ -1,4 +1,4 @@
-package com.ranma2913.pricecompare;
+package com.ranma2913.pricecompare.database;
 
 import java.util.ArrayList;
 
@@ -13,4 +13,6 @@ public interface DatabaseDAO {
     PriceComparison updatePriceComparison(PriceComparison docWithUpdates);
 
     PriceComparison saveNewPriceComparison(String storeName, String itemDescription, String itemPrice, String numberOfUnits, String typeOfUnits);
+
+    boolean deleteDatabase();
 }
