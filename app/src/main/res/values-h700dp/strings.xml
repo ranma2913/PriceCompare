@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="splash_screen_text">com.ranma2913.pricecompare</string>
-    <string name="addNewItemButtonText">Add New Item</string>
-    <string name="itemStoreInputHint">Store Name</string>
-</resources>
