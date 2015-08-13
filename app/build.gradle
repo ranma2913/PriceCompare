@@ -14,7 +14,7 @@ ext {
 
     //AppVersionCode relative release version.
     //Increment every update.
-    androidAppVersionCode = 5
+    androidAppVersionCode = 6
 
     dependenciesAndroidAnnotationsVersion = '3.3.2'
     dependenciesCouchBaseVersion = '1.1.0'
