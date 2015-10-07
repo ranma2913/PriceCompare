@@ -15,7 +15,7 @@ import com.ranma2913.pricecompare.R;
  */
 public class ConfirmDeleteDatabaseFragment extends DialogFragment {
 
-    final String TAG = ConfirmDeleteDatabaseFragment.class.getName();
+    final String TAG = ConfirmDeleteDatabaseFragment.class.getSimpleName();
     ConfirmDeleteDatabaseDialogListener confirmDialogListener;
 
     // Override the Fragment.onAttach() method to instantiate the NoticeDialogListener
@@ -43,13 +43,13 @@ public class ConfirmDeleteDatabaseFragment extends DialogFragment {
         builder.setMessage(R.string.delete_database)
                 .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        Log.d(TAG, "Confirm button Clicked");
+                        Log.d(TAG + "@onCreateDialog", "Confirm button Clicked");
                         confirmDialogListener.onDeleteDatabasePositiveClick(ConfirmDeleteDatabaseFragment.this);
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        Log.d(TAG, "Cancel button Clicked");
+                        Log.d(TAG + "@onCreateDialog", "Cancel button Clicked");
                         confirmDialogListener.onDeleteDatabaseNegativeClick(ConfirmDeleteDatabaseFragment.this);
                     }
                 });

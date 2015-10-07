@@ -18,6 +18,7 @@ import java.util.ArrayList;
  */
 @EBean
 public class PriceComparisonAdapter extends BaseAdapter {
+    final String TAG = PriceComparisonAdapter.class.getSimpleName();
 
     ArrayList<PriceComparison> priceComparisons;
 
@@ -62,9 +63,17 @@ public class PriceComparisonAdapter extends BaseAdapter {
         return position;
     }
 
+    /**
+     * Clear all data by deleting the database.
+     *
+     * @return boolean the result of the action.
+     */
+    public boolean clearDatabase() {
+        return databaseDAO.deleteDatabase();
+    }
+
     public void refreshData() {
-        priceComparisons = databaseDAO.getAllPriceComparisons();
-        notifyDataSetChanged();
+        this.priceComparisons = databaseDAO.getAllPriceComparisons();
     }
 }
 

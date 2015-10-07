@@ -4,6 +4,7 @@ package com.ranma2913.pricecompare.database;
  * Created by jsticha on 8/4/2015.
  */
 public class PriceComparisonItem {
+    final String TAG = PriceComparisonItem.class.getSimpleName();
     public int icon;
     public String title;
 

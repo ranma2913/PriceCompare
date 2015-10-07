@@ -14,7 +14,7 @@ import java.util.Map;
  * VO containing a price comparison
  */
 public class PriceComparison {
-    final String TAG = PriceComparison.class.getName();
+    final String TAG = PriceComparison.class.getSimpleName();
 
     private String documentID;
     private String docType;
@@ -30,7 +30,7 @@ public class PriceComparison {
         this.documentMap = documentMap;
         this.documentID = documentID;
         this.docType = "priceComparison";
-        Log.d(TAG, "PriceComparison Created :" + getDocProperties());
+        Log.d(TAG + "@PriceComparison", "PriceComparison Created :" + getDocProperties());
     }
 
     public String getDocumentID() {
@@ -91,6 +91,7 @@ public class PriceComparison {
     }
 
     public String getCreationDate() {
+//        return (null != documentMap.get("creationDate") ? documentMap.get("creationDate") : Utils.getCurrentTimeStampString());
         return documentMap.get("creationDate");
     }
 

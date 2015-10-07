@@ -31,7 +31,7 @@ import java.util.ArrayList;
 @EActivity(R.layout.activity_enter_item)
 @OptionsMenu(R.menu.menu_enter_item)
 public class EnterItemActivity extends AppCompatActivity {
-    final String TAG = EnterItemActivity.class.getName();
+    final String TAG = EnterItemActivity.class.getSimpleName();
 
     @ViewById(R.id.itemDescriptionInput)
     EditText itemDescriptionInput;
@@ -78,7 +78,7 @@ public class EnterItemActivity extends AppCompatActivity {
                 return false;
             }
         });
-        Log.d(TAG, ".initTypeOfUnitsInputOnKeyListener(): Type of units input key listener set.");
+        Log.d(TAG, "@initTypeOfUnitsInputOnKeyListener: Type of units input key listener set.");
     }
 
     @OptionsItem(R.id.about)
@@ -88,12 +88,12 @@ public class EnterItemActivity extends AppCompatActivity {
     }
 
     void refreshScreen() {
-        Log.d(TAG, ".refreshScreen(): started");
+        Log.d(TAG + "@refreshScreen", "started");
         itemStoreInput.setText(null);
         itemDescriptionInput.setText(null);
         itemPriceInput.setText(null);
         numberOfUnitsInput.setText(null);
-        Log.d(TAG, ".refreshScreen(): finished");
+        Log.d(TAG + "@refreshScreen", "finished");
     }
 
     @Click(R.id.clearButton)
@@ -109,29 +109,28 @@ public class EnterItemActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        refreshScreen();
     }
 
     private boolean validateInputFields() {
-        Log.d(TAG, ".validateInputFields(): started");
+        Log.d(TAG + "@validateInputFields", "started");
         boolean isValid = true;
         if (!Utils.inputFieldsNotEmptyOrNull(editTextArrayList)) {
             Toast.makeText(getApplicationContext(), "Please fill all entry fields.", Toast.LENGTH_SHORT).show();
             isValid = false;
-            Log.d(TAG, ".validateInputFields(): Please fill all entry fields.");
+            Log.d(TAG + "@validateInputFields", "Please fill all entry fields.");
         } else {
-            if (new BigDecimal(itemPriceInput.getText().toString().replace("$", "")).compareTo(BigDecimal.ZERO) <= 0) {
+            if (new BigDecimal(Utils.formatCleanPriceString(itemPriceInput.getText().toString())).compareTo(BigDecimal.ZERO) <= 0) {
                 Toast.makeText(getApplicationContext(), "Item Price must be greater than $0.00.", Toast.LENGTH_SHORT).show();
                 isValid = false;
-                Log.d(TAG, ".validateInputFields(): Item Price must be greater than $0.00.");
+                Log.d(TAG + "@validateInputFields", "Item Price must be greater than $0.00.");
             }
             if (Double.parseDouble(numberOfUnitsInput.getText().toString().trim()) <= 0.0) {
                 Toast.makeText(getApplicationContext(), "Number of units must be greater than 0.", Toast.LENGTH_SHORT).show();
                 isValid = false;
-                Log.d(TAG, ".validateInputFields(): Number of units must be greater than 0.");
+                Log.d(TAG + "@validateInputFields", "Number of units must be greater than 0.");
             }
         }
-        Log.d(TAG, ".validateInputFields(): finished");
+        Log.d(TAG + "@validateInputFields", "finished");
         return isValid;
     }
 

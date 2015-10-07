@@ -14,7 +14,7 @@ ext {
 
     //AppVersionCode relative release version.
     //Increment every update.
-    androidAppVersionCode = 6
+    androidAppVersionCode = 7
 
     dependenciesAndroidAnnotationsVersion = '3.3.2'
     dependenciesCouchBaseVersion = '1.1.0'
@@ -71,7 +71,7 @@ android {
     defaultConfig {
         applicationId "com.ranma2913.pricecompare"
         minSdkVersion 9
-        targetSdkVersion 22
+        targetSdkVersion 23
         versionCode androidAppVersionCode
         versionName computeVersionName()
     }

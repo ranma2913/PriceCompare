@@ -9,8 +9,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ranma2913.pricecompare.R;
-import com.ranma2913.pricecompare.database.DatabaseDAO;
-import com.ranma2913.pricecompare.database.DatabaseDaoImpl;
 import com.ranma2913.pricecompare.database.PriceComparison;
 import com.ranma2913.pricecompare.database.PriceComparisonAdapter;
 import com.ranma2913.pricecompare.fragments.ConfirmDeleteDatabaseFragment;
@@ -28,7 +26,7 @@ import org.androidannotations.annotations.ViewById;
 @OptionsMenu(R.menu.menu_home_screen)
 public class MainActivity extends AppCompatActivity implements ConfirmDeleteDatabaseFragment.ConfirmDeleteDatabaseDialogListener {
 
-    final String TAG = MainActivity.class.getName();
+    final String TAG = MainActivity.class.getSimpleName();
 
     @ViewById(R.id.homeScreenWelcomeMessage)
     TextView homeScreenWelcomeMessage;
@@ -39,12 +37,16 @@ public class MainActivity extends AppCompatActivity implements ConfirmDeleteData
     @Bean
     PriceComparisonAdapter priceComparisonAdapter;
 
-    @Bean(DatabaseDaoImpl.class)
-    DatabaseDAO databaseDAO;
-
     @AfterViews
     void bindAdapter() {
         priceCompareHistoryListView.setAdapter(priceComparisonAdapter);
+    }
+
+    @OptionsItem(R.id.refreshData)
+    public boolean refreshDataSelected() {
+        Toast.makeText(getApplicationContext(), "Refresh Data menu item pressed", Toast.LENGTH_SHORT).show();
+        priceComparisonAdapter.refreshData();
+        return true;
     }
 
     @OptionsItem(R.id.about)
@@ -87,12 +89,13 @@ public class MainActivity extends AppCompatActivity implements ConfirmDeleteData
 
     @Override
     public void onDeleteDatabasePositiveClick(DialogFragment dialog) {
-        Log.d(TAG, "Positive button Clicked for delete database");
-        Toast.makeText(getApplicationContext(), "Delete all comparisons result: " + databaseDAO.deleteDatabase(), Toast.LENGTH_LONG).show();
+        Log.d(TAG, "@onDeleteDatabasePositiveClick: Positive button Clicked for delete database");
+        Toast.makeText(getApplicationContext(), "Delete all comparisons result: " + (priceComparisonAdapter.clearDatabase() ? "SUCCESS" : "FAILED"), Toast.LENGTH_LONG).show();
+        priceComparisonAdapter.refreshData();
     }
 
     @Override
     public void onDeleteDatabaseNegativeClick(DialogFragment dialog) {
-        Log.d(TAG, "Negative button Clicked for delete database");
+        Log.d(TAG, "@onDeleteDatabaseNegativeClick: Negative button Clicked for delete database");
     }
 }

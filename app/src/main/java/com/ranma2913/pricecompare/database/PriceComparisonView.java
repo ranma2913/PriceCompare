@@ -15,7 +15,7 @@ import org.androidannotations.annotations.ViewById;
 
 @EViewGroup(R.layout.listview_item_row)
 public class PriceComparisonView extends LinearLayout {
-
+    final String TAG = PriceComparisonView.class.getSimpleName();
     @ViewById
     TextView itemDescription;
     @ViewById

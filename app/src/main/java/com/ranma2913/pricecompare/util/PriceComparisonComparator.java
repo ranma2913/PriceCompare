@@ -1,4 +1,4 @@
-package com.ranma2913.global;
+package com.ranma2913.pricecompare.util;
 
 import com.ranma2913.pricecompare.database.PriceComparison;
 
@@ -10,6 +10,7 @@ import java.util.Comparator;
  * Comparator to sort VOs by creation date ascending.
  */
 public class PriceComparisonComparator implements Comparator<PriceComparison> {
+    final String TAG = PriceComparisonComparator.class.getSimpleName();
     @Override
     public int compare(PriceComparison lhs, PriceComparison rhs) {
         String creationDate1 = lhs.getCreationDate();
