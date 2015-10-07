@@ -5,8 +5,8 @@ import java.util.ArrayList;
 /**
  * Created by jsticha on 8/5/2015.
  */
-public interface DatabaseDAO {
-    String TAG = DatabaseDAO.class.getSimpleName();
+public interface DatabaseDao {
+    String TAG = DatabaseDao.class.getSimpleName();
 
     ArrayList<PriceComparison> getAllPriceComparisons();
 

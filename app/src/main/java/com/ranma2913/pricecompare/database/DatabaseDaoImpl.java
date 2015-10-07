@@ -26,7 +26,7 @@ import java.util.Map;
  * Created by jsticha on 8/4/2015.
  */
 @EBean
-public class DatabaseDaoImpl implements DatabaseDAO {
+public class DatabaseDaoImpl implements DatabaseDao {
     final String TAG = DatabaseDaoImpl.class.getSimpleName();
 
     Manager manager;

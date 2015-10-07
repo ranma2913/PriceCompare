@@ -23,14 +23,14 @@ public class PriceComparisonAdapter extends BaseAdapter {
     ArrayList<PriceComparison> priceComparisons;
 
     @Bean(DatabaseDaoImpl.class)
-    DatabaseDAO databaseDAO;
+    DatabaseDao databaseDao;
 
     @RootContext
     Context context;
 
     @AfterInject
     void initAdapter() {
-        priceComparisons = databaseDAO.getAllPriceComparisons();
+        priceComparisons = databaseDao.getAllPriceComparisons();
     }
 
     @Override
@@ -69,11 +69,11 @@ public class PriceComparisonAdapter extends BaseAdapter {
      * @return boolean the result of the action.
      */
     public boolean clearDatabase() {
-        return databaseDAO.deleteDatabase();
+        return databaseDao.deleteDatabase();
     }
 
     public void refreshData() {
-        this.priceComparisons = databaseDAO.getAllPriceComparisons();
+        this.priceComparisons = databaseDao.getAllPriceComparisons();
     }
 }
 

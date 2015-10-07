@@ -12,7 +12,7 @@ import android.widget.Toast;
 import com.ranma2913.global.MoneyTextWatcher;
 import com.ranma2913.global.Utils;
 import com.ranma2913.pricecompare.R;
-import com.ranma2913.pricecompare.database.DatabaseDAO;
+import com.ranma2913.pricecompare.database.DatabaseDao;
 import com.ranma2913.pricecompare.database.DatabaseDaoImpl;
 import com.ranma2913.pricecompare.database.PriceComparison;
 
@@ -48,7 +48,7 @@ public class EnterItemActivity extends AppCompatActivity {
     ArrayList<EditText> editTextArrayList;
 
     @Bean(DatabaseDaoImpl.class)
-    DatabaseDAO databaseDAO;
+    DatabaseDao databaseDao;
 
     @AfterViews
     void initTypeOfUnitsSpinner() {
@@ -137,7 +137,7 @@ public class EnterItemActivity extends AppCompatActivity {
     @SuppressWarnings("ConstantConditions")
     private void calculatePrice() {
         if (validateInputFields()) {
-            PriceComparison priceComparison = databaseDAO.saveNewPriceComparison(itemStoreInput.getText().toString(), itemDescriptionInput.getText().toString(), itemPriceInput.getText().toString(), numberOfUnitsInput.getText().toString(), typeOfUnitsInputSpinner.getSelectedItem().toString());
+            PriceComparison priceComparison = databaseDao.saveNewPriceComparison(itemStoreInput.getText().toString(), itemDescriptionInput.getText().toString(), itemPriceInput.getText().toString(), numberOfUnitsInput.getText().toString(), typeOfUnitsInputSpinner.getSelectedItem().toString());
             Toast.makeText(getApplicationContext(), priceComparison.getPricePerUnitString(), Toast.LENGTH_LONG).show();
             refreshScreen();
         }
