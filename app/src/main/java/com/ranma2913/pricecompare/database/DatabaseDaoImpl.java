@@ -12,11 +12,13 @@ import com.couchbase.lite.QueryRow;
 import com.couchbase.lite.android.AndroidContext;
 import com.ranma2913.global.Constants;
 import com.ranma2913.global.Utils;
+import com.ranma2913.pricecompare.util.PriceComparisonComparator;
 
 import org.androidannotations.annotations.EBean;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,25 +27,25 @@ import java.util.Map;
  */
 @EBean
 public class DatabaseDaoImpl implements DatabaseDAO {
+    final String TAG = DatabaseDaoImpl.class.getSimpleName();
 
-    final String TAG = DatabaseDaoImpl.class.getName();
     Manager manager;
     Database database;
 
     public DatabaseDaoImpl(Context context) {
         if (!Manager.isValidDatabaseName(Constants.PRICE_COMPARE_DB_NAME)) {
-            Log.e(TAG, ".initDatabase(): Bad database name");
+            Log.e(TAG + "@initDatabase", "Bad database name");
             return;
         }
         try {
             manager = new Manager(new AndroidContext(context), Manager.DEFAULT_OPTIONS);
-            Log.d(TAG, ".initDatabase(): Manager created");
+            Log.i(TAG + "@initDatabase", "Manager created");
             database = manager.getDatabase(Constants.PRICE_COMPARE_DB_NAME);
-            Log.d(TAG, ".initDatabase(): Database created");
+            Log.i(TAG + "@initDatabase", "Database created");
         } catch (IOException e) {
-            Log.e(TAG, ".initDatabase(): Cannot create manager object");
+            Log.e(TAG + "@initDatabase", "Cannot create manager object");
         } catch (CouchbaseLiteException e) {
-            Log.e(TAG, ".initDatabase(): Cannot get database");
+            Log.e(TAG + "@initDatabase", "Cannot get database");
         }
     }
 
@@ -61,7 +63,7 @@ public class DatabaseDaoImpl implements DatabaseDAO {
             // Save the properties to the document
             document.putProperties(doc);
         } catch (CouchbaseLiteException e) {
-            Log.e(TAG, "Error putting document", e);
+            Log.e(TAG + "@getNewDocument", "Error putting document", e);
         }
         return documentId;
     }
@@ -74,13 +76,14 @@ public class DatabaseDaoImpl implements DatabaseDAO {
         newProperties.put("itemPrice", Utils.formatCleanPriceString(itemPrice));
         newProperties.put("numberOfUnits", numberOfUnits);
         newProperties.put("typeOfUnits", typeOfUnits);
+        newProperties.put("creationDate", Utils.getCurrentTimeStampString());
 
         //create the new comparison document and get the ID
         String documentId = getNewDocument(database, newProperties);
-        Log.d(TAG, ".saveNewPriceComparison: new document id=" + documentId);
+        Log.d(TAG + "@saveNewPriceComparison", "new document id=" + documentId);
         // retrieve the document from the database
         Document retrievedDocument = database.getDocument(documentId);
-        Log.d(TAG, ".getNewDocument: document=" + String.valueOf(retrievedDocument));
+        Log.d(TAG + "@getNewDocument", "document=" + String.valueOf(retrievedDocument));
         @SuppressWarnings("unchecked") Map<String, String> comparisonMap = (Map<String, String>) retrievedDocument.getProperty("priceComparisonDocument");
         return new PriceComparison(documentId, comparisonMap);
     }
@@ -89,10 +92,12 @@ public class DatabaseDaoImpl implements DatabaseDAO {
     public boolean deleteDatabase() {
         try {
             database.delete();
-            Log.d(TAG, ".deleteDatabase: Database successfully deleted");
+            Log.d(TAG + "@deleteDatabase", "Database successfully deleted");
+            database = manager.getDatabase(Constants.PRICE_COMPARE_DB_NAME);
+            Log.d(TAG + "@deleteDatabase", "Database successfully re-created");
             return true;
         } catch (CouchbaseLiteException e) {
-            Log.e(TAG, ".deleteDatabase: Cannot delete database", e);
+            Log.e(TAG + "@deleteDatabase", "Cannot delete database", e);
             e.printStackTrace();
             return false;
         }
@@ -102,17 +107,17 @@ public class DatabaseDaoImpl implements DatabaseDAO {
     public PriceComparison updatePriceComparison(PriceComparison docWithUpdates) {
         //get the document from the database
         Document retrievedDocument = database.getDocument(docWithUpdates.getDocumentID());
-        Log.d(TAG, ".updatePriceComparison: retrievedDocument=" + String.valueOf(retrievedDocument));
+        Log.d(TAG + "@updatePriceComparison", "retrievedDocument=" + String.valueOf(retrievedDocument));
         try {
             @SuppressWarnings("unchecked") Map<String, Object> comparisonMap = (Map<String, Object>) retrievedDocument.getProperty("priceComparisonDocument");
             retrievedDocument.putProperties(comparisonMap);
         } catch (CouchbaseLiteException e) {
-            Log.e(TAG, ".updatePriceComparison: Error Saving update: " + String.valueOf(docWithUpdates.getDocProperties()), e);
+            Log.e(TAG + "@updatePriceComparison", "Error Saving update: " + String.valueOf(docWithUpdates.getDocProperties()), e);
         }
 
         // retrieve the document from the database
         Document updatedDocument = database.getDocument(docWithUpdates.getDocumentID());
-        Log.d(TAG, ".updatePriceComparison: updatedDocument=" + String.valueOf(updatedDocument));
+        Log.d(TAG + "@updatePriceComparison", "updatedDocument=" + String.valueOf(updatedDocument));
 
         //return a new construct containing the updates retrieved from the database.
         @SuppressWarnings("unchecked") Map<String, String> comparisonMap = (Map<String, String>) updatedDocument.getProperty("priceComparisonDocument");
@@ -122,24 +127,24 @@ public class DatabaseDaoImpl implements DatabaseDAO {
     @Override
     public boolean deletePriceComparison(PriceComparison docToDelete) {
         Document retrievedDocument = database.getDocument(docToDelete.getDocumentID());
-        Log.d(TAG, ".deletePriceComparison: Document to delete=" + String.valueOf(retrievedDocument));
+        Log.d(TAG + "@deletePriceComparison", "Document to delete=" + String.valueOf(retrievedDocument));
         // delete the document
         try {
             retrievedDocument.delete();
-            Log.d(TAG, ".deletePriceComparison Deleted document, deletion status = " + retrievedDocument.isDeleted());
+            Log.d(TAG + "@deletePriceComparison", "Deleted document, deletion status = " + retrievedDocument.isDeleted());
         } catch (CouchbaseLiteException e) {
-            Log.e(TAG, ".deletePriceComparison Cannot delete document", e);
+            Log.e(TAG + "@deletePriceComparison", "Cannot delete document", e);
         }
         return retrievedDocument.isDeleted();
     }
 
     @Override
     public ArrayList<PriceComparison> getAllPriceComparisons() {
-        Log.d(TAG, ".getAllPriceComparisons enter method");
+        Log.d(TAG + "@getAllPriceComparisons", "enter method");
         ArrayList<PriceComparison> allPriceComparisons = new ArrayList<>();
         try {
             QueryEnumerator result = database.createAllDocumentsQuery().run();
-            Log.d(TAG, ".getAllPriceComparisons results successful. Number of Rows: " + result.getCount());
+            Log.d(TAG + "@getAllPriceComparisons", "results successful. Number of Rows: " + result.getCount());
             while (result.hasNext()) {
                 QueryRow row = result.next();
                 Document retrievedDocument = database.getDocument(row.getSourceDocumentId());
@@ -148,16 +153,22 @@ public class DatabaseDaoImpl implements DatabaseDAO {
                     PriceComparison priceComparison = new PriceComparison(retrievedDocument.getId(), comparisonMap);
                     allPriceComparisons.add(priceComparison);
                 } else {
-                    Log.d(TAG, ".getAllPriceComparisons: retrievedDocument is not a valid PriceComparison ID=" + retrievedDocument.getId());
-                    Log.d(TAG, ".getAllPriceComparisons: Bad retrievedDocument has been deleted :: " + retrievedDocument.delete());
+                    Log.d(TAG + "@getAllPriceComparisons", "retrievedDocument is not a valid PriceComparison ID=" + retrievedDocument.getId());
+                    Log.d(TAG + "@getAllPriceComparisons", "Bad retrievedDocument has been deleted :: " + retrievedDocument.delete());
                 }
             }
         } catch (CouchbaseLiteException e) {
-            Log.e(TAG, ".getAllPriceComparisons Error running query", e);
+            Log.e(TAG + "@getAllPriceComparisons", "Error running query", e);
             e.printStackTrace();
         }
-        Log.d(TAG, ".getAllPriceComparisons: allPriceComparisons loaded. Size=" + allPriceComparisons.size());
-        Log.d(TAG, ".getAllPriceComparisons exit method");
-        return allPriceComparisons;
+        Log.d(TAG + "@getAllPriceComparisons", "allPriceComparisons loaded. Size=" + allPriceComparisons.size());
+        Log.d(TAG + "@getAllPriceComparisons", "exit method");
+        return sortByCreationDate(allPriceComparisons);
+    }
+
+    private ArrayList<PriceComparison> sortByCreationDate(ArrayList<PriceComparison> priceComparisons) {
+        Log.d(TAG + "@sortByCreationDate", "priceComparisons ArrayList:" + priceComparisons.toString());
+        Collections.sort(priceComparisons, new PriceComparisonComparator());
+        return priceComparisons;
     }
 }

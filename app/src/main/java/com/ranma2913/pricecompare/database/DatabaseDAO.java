@@ -6,6 +6,8 @@ import java.util.ArrayList;
  * Created by jsticha on 8/5/2015.
  */
 public interface DatabaseDAO {
+    String TAG = DatabaseDAO.class.getSimpleName();
+
     ArrayList<PriceComparison> getAllPriceComparisons();
 
     boolean deletePriceComparison(PriceComparison docToDelete);
