@@ -13,16 +13,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:contentDescription="@string/splashScreenLogo"
         android:src="@drawable/splash_screen_icon"/>
 
-    <TextView
-        android:layout_width="fill_parent"
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dp"
-        android:gravity="center_horizontal"
-        android:text="@string/splash_screen_text"
-        android:textColor="#454545"
-        android:textSize="12sp"/>
+        android:layout_below="@+id/imgLogo"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="right"
+        android:contentDescription="@string/poweredByGoogleText"
+        android:src="@drawable/powered_by_google_light"/>
 
 </RelativeLayout>
