@@ -1,7 +1,5 @@
-
 # Built application files
-#*.apk
-
+/APKs
 
 # Files for the Dalvik VM
 *.dex
@@ -27,5 +25,4 @@ proguard/
 *.log
 
 # intelliJ Files
-/.idea/workspace.xml
-/.idea/libraries
+/.idea/
