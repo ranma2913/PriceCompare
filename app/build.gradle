@@ -14,7 +14,7 @@ ext {
 
     //AppVersionCode relative release version.
     //Increment every update.
-    androidAppVersionCode = 10
+    androidAppVersionCode = 11
 }
 
 buildscript {
