@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements ConfirmDeleteData
     @Override
     public void onDeleteDatabasePositiveClick(DialogFragment dialog) {
         Log.d(TAG, "@onDeleteDatabasePositiveClick: Positive button Clicked for delete database");
-        Toast.makeText(getApplicationContext(), "Delete all comparisons result: " + (priceComparisonAdapter.clearDatabase() ? "SUCCESS" : "FAILED"), Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), "Delete all comparisons result: " + (priceComparisonAdapter.clearTable() ? "SUCCESS" : "FAILED"), Toast.LENGTH_LONG).show();
         priceComparisonAdapter.refreshData();
     }
 

@@ -62,7 +62,7 @@ public class PlaceJsonParser {
      * Parsing the Place JSON object
      */
     private HashMap<String, String> getPlace(JSONObject jPlace) {
-        Log.d(TAG + "@getPlace", "enter");
+        Log.i(TAG + "@getPlace", "enter");
         HashMap<String, String> place = new HashMap<>();
 
         String id = "";
@@ -87,7 +87,7 @@ public class PlaceJsonParser {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        Log.d(TAG + "@getPlace", "exit");
+        Log.i(TAG + "@getPlace", "exit");
         return place;
     }
 }

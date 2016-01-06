@@ -5,4 +5,6 @@ package com.ranma2913.global;
  */
 public class Constants {
     public static final String PRICE_COMPARE_DB_NAME = "price_compare_db";
+    public static final String TABLE_NAME = "comments";
+
 }

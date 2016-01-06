@@ -20,19 +20,20 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.dao.Dao;
 import com.ranma2913.global.MoneyTextWatcher;
 import com.ranma2913.global.Utils;
 import com.ranma2913.pricecompare.R;
-import com.ranma2913.pricecompare.database.DatabaseDao;
-import com.ranma2913.pricecompare.database.DatabaseDaoImpl;
+import com.ranma2913.pricecompare.database.DatabaseHelper;
 import com.ranma2913.pricecompare.database.PriceComparison;
 import com.ranma2913.pricecompare.placesApi.CustomAutoCompleteTextView;
 import com.ranma2913.pricecompare.placesApi.PlaceJsonParser;
 
 import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.OptionsItem;
@@ -50,6 +51,7 @@ import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -71,12 +73,13 @@ public class EnterItemActivity extends AppCompatActivity implements LocationList
     Spinner typeOfUnitsInputSpinner;
     @ViewById(R.id.itemStoreInput)
     CustomAutoCompleteTextView itemStoreInput;
+    @ViewById(R.id.locationTextView)
+    TextView locationTextView;
 
     @ViewsById({R.id.itemDescriptionInput, R.id.itemPriceInput, R.id.numberOfUnitsInput, R.id.itemStoreInput})
     ArrayList<EditText> editTextArrayList;
 
-    @Bean(DatabaseDaoImpl.class)
-    DatabaseDao databaseDao;
+    DatabaseHelper databaseHelper;
 
     PlacesTask placesTask;
     ParserTask parserTask;
@@ -198,6 +201,27 @@ public class EnterItemActivity extends AppCompatActivity implements LocationList
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+		/*
+         * You'll need this in your class to release the helper when done.
+		 */
+        if (databaseHelper != null) {
+            OpenHelperManager.releaseHelper();
+            databaseHelper = null;
+        }
+    }
+
+    /* This is how, DatabaseHelper can be initialized for future use */
+    private DatabaseHelper getHelper() {
+        if (databaseHelper == null) {
+            databaseHelper = OpenHelperManager.getHelper(this, DatabaseHelper.class);
+        }
+        return databaseHelper;
+    }
+
     @OptionsItem(R.id.about)
     public boolean aboutSelected() {
         Toast.makeText(getApplicationContext(), "About menu item pressed", Toast.LENGTH_SHORT).show();
@@ -249,7 +273,29 @@ public class EnterItemActivity extends AppCompatActivity implements LocationList
     @SuppressWarnings("ConstantConditions")
     private void calculatePrice() {
         if (validateInputFields()) {
-            PriceComparison priceComparison = databaseDao.saveNewPriceComparison(itemStoreInput.getText().toString(), itemDescriptionInput.getText().toString(), itemPriceInput.getText().toString(), numberOfUnitsInput.getText().toString(), typeOfUnitsInputSpinner.getSelectedItem().toString());
+            PriceComparison priceComparison = new PriceComparison(
+                    itemStoreInput.getText().toString(),
+                    itemDescriptionInput.getText().toString(),
+                    Utils.formatCleanPriceString(itemPriceInput.getText().toString()),
+                    numberOfUnitsInput.getText().toString(),
+                    typeOfUnitsInputSpinner.getSelectedItem().toString(),
+                    Utils.getCurrentTimeStampString());
+            try {
+                // This is how, a reference of DAO object can be done
+                final Dao<PriceComparison, Integer> sqLitePriceComparisonDao = getHelper().getPriceComparisonDao();
+
+                //This is the way to insert data into a database table
+                sqLitePriceComparisonDao.create(priceComparison);
+
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+//            PriceComparison priceComparison = databaseHelper.saveNewPriceComparison(
+//                    itemStoreInput.getText().toString(),
+//                    itemDescriptionInput.getText().toString(),
+//                    itemPriceInput.getText().toString(),
+//                    numberOfUnitsInput.getText().toString(),
+//                    typeOfUnitsInputSpinner.getSelectedItem().toString());
             Toast.makeText(getApplicationContext(), priceComparison.getPricePerUnitString(), Toast.LENGTH_LONG).show();
             refreshScreen();
         }
@@ -260,6 +306,7 @@ public class EnterItemActivity extends AppCompatActivity implements LocationList
         double lat = location.getLatitude();
         double lng = location.getLongitude();
         latLongString = lat + "," + lng;
+        locationTextView.setText(latLongString);
         Log.d(TAG + "@onLocationChanged", "latLongString=" + latLongString);
     }
 
@@ -318,6 +365,7 @@ public class EnterItemActivity extends AppCompatActivity implements LocationList
             if (null != latLongString) {
                 parameterBuilder.append("&location=").append(latLongString);
             }
+            Log.d(LocalTAG + "@doInBackground", "Lat Long String: " + latLongString);
 
             // Rank results by distance
             parameterBuilder.append("&rankby=distance");

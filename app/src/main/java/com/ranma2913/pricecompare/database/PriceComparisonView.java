@@ -32,9 +32,10 @@ public class PriceComparisonView extends LinearLayout {
     }
 
     public void bind(PriceComparison pc) {
-        itemDescription.setText(pc.getItemDescription());
-        storeName.setText(pc.getStoreName());
-        itemPrice.setText("$" + pc.getItemPrice());
+        itemDescription.setText(pc.itemDescription);
+        storeName.setText(pc.storeName);
+        String itemPriceString = "$" + pc.itemPrice;
+        itemPrice.setText(itemPriceString);
         itemQuantityUnits.setText(pc.getQuantityAndUnitsString());
         pricePerUnit.setText(pc.getPricePerUnitString());
     }

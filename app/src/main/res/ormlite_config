@@ -1,0 +1,39 @@
+#################################
+# --table-start--
+dataClass=com.androidbegin.studentdirectory.data.StudentDetails
+tableName=student_details
+# --table-fields-start--
+
+# --field-start--
+fieldName=id
+columnName=_id
+generatedId=true
+# --field-end--
+
+# --field-start--
+fieldName=storeName
+# --field-end--
+
+# --field-start--
+fieldName=itemDescription
+# --field-end--
+
+# --field-start--
+fieldName=itemPrice
+# --field-end--
+
+# --field-start--
+fieldName=numberOfUnits
+# --field-end--
+
+# --field-start--
+fieldName=typeOfUnits
+# --field-end--
+
+# --field-start--
+fieldName=creationDate
+# --field-end--
+
+# --table-fields-end--
+# --table-end--
+#################################

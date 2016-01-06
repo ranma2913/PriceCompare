@@ -5,12 +5,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.dao.Dao;
+
 import org.androidannotations.annotations.AfterInject;
-import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -20,42 +24,52 @@ import java.util.ArrayList;
 public class PriceComparisonAdapter extends BaseAdapter {
     final String TAG = PriceComparisonAdapter.class.getSimpleName();
 
-    ArrayList<PriceComparison> priceComparisons;
+    List<PriceComparison> priceComparisonsList;
 
-    @Bean(DatabaseDaoImpl.class)
-    DatabaseDao databaseDao;
-
+    DatabaseHelper databaseHelper;
     @RootContext
     Context context;
+    private Dao<PriceComparison, Integer> priceComparisonsDao;
 
     @AfterInject
     void initAdapter() {
-        priceComparisons = databaseDao.getAllPriceComparisons();
+        try {
+            priceComparisonsDao = getHelper().getPriceComparisonDao();
+            priceComparisonsList = new ArrayList<>();
+            priceComparisonsList = priceComparisonsDao.queryForAll();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // This is how, DatabaseHelper can be initialized for future use
+    private DatabaseHelper getHelper() {
+        if (databaseHelper == null) {
+            databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
+        }
+        return databaseHelper;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-
         PriceComparisonView priceComparisonView;
         if (convertView == null) {
             priceComparisonView = PriceComparisonView_.build(context);
         } else {
             priceComparisonView = (PriceComparisonView) convertView;
         }
-
         priceComparisonView.bind(getItem(position));
-
         return priceComparisonView;
     }
 
     @Override
     public int getCount() {
-        return priceComparisons.size();
+        return priceComparisonsList.size();
     }
 
     @Override
     public PriceComparison getItem(int position) {
-        return priceComparisons.get(position);
+        return priceComparisonsList.get(position);
     }
 
     @Override
@@ -68,12 +82,17 @@ public class PriceComparisonAdapter extends BaseAdapter {
      *
      * @return boolean the result of the action.
      */
-    public boolean clearDatabase() {
-        return databaseDao.deleteDatabase();
+    public boolean clearTable() {
+        return databaseHelper.clearTable(PriceComparison.class);
     }
 
     public void refreshData() {
-        this.priceComparisons = databaseDao.getAllPriceComparisons();
+        try {
+            priceComparisonsList = new ArrayList<>();
+            priceComparisonsList = priceComparisonsDao.queryForAll();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
 

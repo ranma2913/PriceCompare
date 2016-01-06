@@ -1,122 +1,75 @@
 package com.ranma2913.pricecompare.database;
 
-import android.util.Log;
+import com.j256.ormlite.field.DatabaseField;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
- * Created by jsticha on 5/6/2015.
- * <p/>
- * VO containing a price comparison
+ * Created by jsticha on 1/6/2016.
  */
-public class PriceComparison {
-    final String TAG = PriceComparison.class.getSimpleName();
+public class PriceComparison implements Serializable {
+    /**
+     * Model class for SQLite PriceComparison table
+     */
+    private static final long serialVersionUID = 1L;
 
-    private String documentID;
-    private String docType;
-    private Map<String, String> documentMap;
+    // Primary key defined as an auto generated integer
+    // If the database table column name differs than the Model class variable name, the way to map to use columnName
+    @DatabaseField(generatedId = true, columnName = "_id")
+    public int id;
+
+    @DatabaseField
+    public String storeName;
+
+    @DatabaseField
+    public String itemDescription;
+
+    @DatabaseField
+    public String itemPrice;
+
+    @DatabaseField
+    public String numberOfUnits;
+
+    @DatabaseField
+    public String typeOfUnits;
+
+    @DatabaseField
+    public String creationDate;
 
     public PriceComparison() {
-        this.documentID = "";
-        this.docType = "priceComparison";
-        this.documentMap = new HashMap<>();
+
     }
 
-    public PriceComparison(String documentID, Map<String, String> documentMap) {
-        this.documentMap = documentMap;
-        this.documentID = documentID;
-        this.docType = "priceComparison";
-        Log.d(TAG + "@PriceComparison", "PriceComparison Created :" + getDocProperties());
-    }
-
-    public String getDocumentID() {
-        return documentID;
-    }
-
-    public void setDocumentID(String documentID) {
-        this.documentID = documentID;
-        this.documentMap.put("documentID", documentID);
-    }
-
-    public String getDocType() {
-        return docType;
-    }
-
-    public void setDocType(String docType) {
-        this.docType = docType;
-    }
-
-    public String getStoreName() {
-        return documentMap.get("storeName");
-    }
-
-    public void setStoreName(String storeName) {
-        this.documentMap.put("storeName", storeName);
-    }
-
-    public String getItemDescription() {
-        return documentMap.get("itemDescription");
-    }
-
-    public void setItemDescription(String itemDescription) {
-        this.documentMap.put("itemDescription", itemDescription);
-    }
-
-    public String getItemPrice() {
-        return documentMap.get("itemPrice");
-    }
-
-    public void setItemPrice(String itemPrice) {
-        this.documentMap.put("itemPrice", itemPrice.replace("$", "").trim());
-    }
-
-    public String getNumberOfUnits() {
-        return documentMap.get("numberOfUnits");
-    }
-
-    public void setNumberOfUnits(String numberOfUnits) {
-        this.documentMap.put("numberOfUnits", numberOfUnits);
-    }
-
-    public String getTypeOfUnits() {
-        return documentMap.get("typeOfUnits");
-    }
-
-    public void setTypeOfUnits(String typeOfUnits) {
-        this.documentMap.put("typeOfUnits", typeOfUnits);
-    }
-
-    public String getCreationDate() {
-//        return (null != documentMap.get("creationDate") ? documentMap.get("creationDate") : Utils.getCurrentTimeStampString());
-        return documentMap.get("creationDate");
-    }
-
-    public void setCreationDate(String creationDate) {
-        this.documentMap.put("creationDate", creationDate);
+    public PriceComparison(String storeName, String itemDescription, String itemPrice,
+                           String numberOfUnits, String typeOfUnits, String creationDate) {
+        this.storeName = storeName;
+        this.itemDescription = itemDescription;
+        this.itemPrice = itemPrice;
+        this.numberOfUnits = numberOfUnits;
+        this.typeOfUnits = typeOfUnits;
+        this.creationDate = creationDate;
     }
 
     public String getPricePerUnit() {
-        return new BigDecimal(new BigDecimal(getItemPrice()).divide(new BigDecimal(getNumberOfUnits()), MathContext.DECIMAL128).toString()).setScale(4, RoundingMode.HALF_UP).toString();
-    }
-
-    public Map getDocProperties() {
-        return documentMap;
+        BigDecimal bigDecimal1 = new BigDecimal(itemPrice);
+        BigDecimal bigDecimal2 = new BigDecimal(numberOfUnits);
+        BigDecimal bigDecimal = new BigDecimal(bigDecimal1.divide(bigDecimal2, MathContext.DECIMAL128).toString()).setScale(4, RoundingMode.HALF_UP);
+        return bigDecimal.toString();
     }
 
     public String getPricePerUnitString() {
-        return "$" + getPricePerUnit() + " / " + getTypeOfUnits();
+        return "$" + getPricePerUnit() + " / " + typeOfUnits;
     }
 
     public String getQuantityAndUnitsString() {
-        return getNumberOfUnits() + " " + getTypeOfUnits();
+        return numberOfUnits + " " + typeOfUnits;
     }
 
     @Override
     public String toString() {
-        return getStoreName() + " " + getItemDescription() + " " + getPricePerUnitString();
+        return storeName + " " + itemDescription + " " + getPricePerUnitString();
     }
 }

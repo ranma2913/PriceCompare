@@ -45,10 +45,10 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     apt 'org.androidannotations:androidannotations:3.3.2'
     compile 'org.androidannotations:androidannotations-api:3.3.2'
-    compile 'com.couchbase.lite:couchbase-lite-android:1.1.0'
     compile 'com.android.support:appcompat-v7:22.2.1'
     compile 'com.android.support:support-v4:22.2.1'
     compile 'com.google.android.gms:play-services:8.1.0'
+    compile 'com.j256.ormlite:ormlite-android:4.48'
 }
 
 apt {

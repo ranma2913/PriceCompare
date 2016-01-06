@@ -13,8 +13,8 @@ public class PriceComparisonComparator implements Comparator<PriceComparison> {
     final String TAG = PriceComparisonComparator.class.getSimpleName();
     @Override
     public int compare(PriceComparison lhs, PriceComparison rhs) {
-        String creationDate1 = lhs.getCreationDate();
-        String creationDate2 = rhs.getCreationDate();
+        String creationDate1 = lhs.creationDate;
+        String creationDate2 = rhs.creationDate;
         // ascending order (descending order would be: name2.compareTo(name1))
         return creationDate2.compareTo(creationDate1);
     }
