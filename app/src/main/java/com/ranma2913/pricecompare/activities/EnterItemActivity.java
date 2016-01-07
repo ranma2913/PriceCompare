@@ -1,6 +1,7 @@
 package com.ranma2913.pricecompare.activities;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
@@ -91,7 +92,8 @@ public class EnterItemActivity extends AppCompatActivity implements LocationList
 
     @AfterViews
     void initLocationManager() {
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        // Get the location manager
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         boolean enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
         // check if enabled and if not send user to the GSP settings
@@ -103,16 +105,12 @@ public class EnterItemActivity extends AppCompatActivity implements LocationList
         }
 
 
-        // Define the criteria how to select the location locationProvider -> use
+        // Define the criteria how to select the locatioin provider -> use
         // default
-        Criteria criteriaForLocationService = new Criteria();
-        List<String> acceptableLocationProviders = locationManager.getProviders(criteriaForLocationService, true);
-        if (!acceptableLocationProviders.isEmpty()) {
-            locationProvider = acceptableLocationProviders.get(0);
-        } else {
-            locationProvider = "";
-        }
+        Criteria criteria = new Criteria();
+        locationProvider = locationManager.getBestProvider(criteria, false);
         Log.d(TAG + "@initLocationManager", "Provider " + locationProvider + " has been selected.");
+
         if (checkCallingOrSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 && checkCallingOrSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
